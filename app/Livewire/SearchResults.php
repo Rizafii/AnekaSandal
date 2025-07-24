@@ -29,9 +29,13 @@ class SearchResults extends Component
 
         if (strlen($this->search) >= 2) {
             $this->showResults = true;
-            // Search in products - adjust according to your Products model
-            $this->results = Products::where('name', 'like', '%' . $this->search . '%')
-                ->orWhere('description', 'like', '%' . $this->search . '%')
+            // Search in products with active scope and eager loading
+            $this->results = Products::active()
+                ->with(['category', 'images'])
+                ->where(function ($query) {
+                    $query->where('name', 'like', '%' . $this->search . '%')
+                        ->orWhere('description', 'like', '%' . $this->search . '%');
+                })
                 ->limit(5)
                 ->get();
         } else {

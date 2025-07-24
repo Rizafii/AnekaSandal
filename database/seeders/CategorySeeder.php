@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class CategorySeeder extends Seeder
 {
@@ -16,6 +15,7 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             [
+                'id' => 1,
                 'name' => 'Sandal Pria',
                 'slug' => 'sandal-pria',
                 'description' => 'Koleksi sandal untuk pria dengan berbagai model dan desain',
@@ -25,6 +25,7 @@ class CategorySeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 2,
                 'name' => 'Sandal Wanita',
                 'slug' => 'sandal-wanita',
                 'description' => 'Koleksi sandal untuk wanita dengan model trendy dan stylish',
@@ -34,6 +35,7 @@ class CategorySeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 3,
                 'name' => 'Sandal Anak',
                 'slug' => 'sandal-anak',
                 'description' => 'Sandal untuk anak-anak dengan warna-warna cerah dan menarik',
@@ -43,6 +45,7 @@ class CategorySeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 4,
                 'name' => 'Sandal Jepit',
                 'slug' => 'sandal-jepit',
                 'description' => 'Sandal jepit casual untuk aktivitas sehari-hari',
@@ -52,6 +55,7 @@ class CategorySeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 5,
                 'name' => 'Sandal Gunung',
                 'slug' => 'sandal-gunung',
                 'description' => 'Sandal dengan grip kuat untuk aktivitas outdoor dan mendaki',

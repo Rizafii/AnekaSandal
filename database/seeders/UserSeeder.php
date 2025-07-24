@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
+                'id' => 1,
                 'username' => 'admin',
                 'email' => 'admin@anekasandal.com',
                 'password' => Hash::make('password'),
@@ -28,6 +29,7 @@ class UserSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 2,
                 'username' => 'customer1',
                 'email' => 'customer1@gmail.com',
                 'password' => Hash::make('password'),
@@ -40,6 +42,7 @@ class UserSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 3,
                 'username' => 'customer2',
                 'email' => 'customer2@gmail.com',
                 'password' => Hash::make('password'),
@@ -52,6 +55,7 @@ class UserSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 4,
                 'username' => 'customer3',
                 'email' => 'customer3@gmail.com',
                 'password' => Hash::make('password'),
@@ -64,6 +68,7 @@ class UserSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 5,
                 'username' => 'customer4',
                 'email' => 'customer4@gmail.com',
                 'password' => Hash::make('password'),

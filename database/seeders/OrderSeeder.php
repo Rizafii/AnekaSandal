@@ -15,8 +15,9 @@ class OrderSeeder extends Seeder
     {
         $orders = [
             [
+                'id' => 1,
                 'user_id' => 2, // customer1
-                'order_number' => 'ORD-' . date('Ymd') . '-001',
+                'order_number' => 'AS-' . date('Ymd') . '-001',
                 'status' => 'selesai',
                 'total_amount' => 150000.00,
                 'shipping_cost' => 15000.00,
@@ -36,8 +37,9 @@ class OrderSeeder extends Seeder
                 'updated_at' => now()->subDays(1),
             ],
             [
+                'id' => 2,
                 'user_id' => 3, // customer2
-                'order_number' => 'ORD-' . date('Ymd') . '-002',
+                'order_number' => 'AS-' . date('Ymd') . '-002',
                 'status' => 'sedang_dikirm',
                 'total_amount' => 120000.00,
                 'shipping_cost' => 12000.00,
@@ -57,8 +59,9 @@ class OrderSeeder extends Seeder
                 'updated_at' => now()->subDays(1),
             ],
             [
+                'id' => 3,
                 'user_id' => 4, // customer3
-                'order_number' => 'ORD-' . date('Ymd') . '-003',
+                'order_number' => 'AS-' . date('Ymd') . '-003',
                 'status' => 'menunggu_pembayaran',
                 'total_amount' => 200000.00,
                 'shipping_cost' => 18000.00,
@@ -78,8 +81,9 @@ class OrderSeeder extends Seeder
                 'updated_at' => now()->subDays(1),
             ],
             [
+                'id' => 4,
                 'user_id' => 5, // customer4
-                'order_number' => 'ORD-' . date('Ymd') . '-004',
+                'order_number' => 'AS-' . date('Ymd') . '-004',
                 'status' => 'menunggu_pembayaran',
                 'total_amount' => 80000.00,
                 'shipping_cost' => 10000.00,
@@ -99,8 +103,9 @@ class OrderSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 5,
                 'user_id' => 2, // customer1 - pesanan kedua
-                'order_number' => 'ORD-' . date('Ymd') . '-005',
+                'order_number' => 'AS-' . date('Ymd') . '-005',
                 'status' => 'dibatalkan',
                 'total_amount' => 100000.00,
                 'shipping_cost' => 12000.00,

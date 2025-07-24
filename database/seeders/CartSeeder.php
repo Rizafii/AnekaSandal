@@ -16,24 +16,24 @@ class CartSeeder extends Seeder
         $cartItems = [
             [
                 'user_id' => 2, // customer1
-                'product_id' => 1,
-                'variant_id' => 1, // Size 39, Hitam
-                'quantity' => 2,
+                'product_id' => 8,
+                'variant_id' => 26, // Platform Gold Size 36
+                'quantity' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'user_id' => 2, // customer1
                 'product_id' => 4,
-                'variant_id' => 14, // Size 38, Hitam (Sandal Jepit)
-                'quantity' => 1,
+                'variant_id' => 16, // Jepit Size 40
+                'quantity' => 2,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'user_id' => 3, // customer2
-                'product_id' => 2,
-                'variant_id' => 6, // Size 36, Merah (Sandal Wanita Elegant)
+                'product_id' => 7,
+                'variant_id' => 24, // Sport Pria Size 41
                 'quantity' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -41,24 +41,24 @@ class CartSeeder extends Seeder
             [
                 'user_id' => 3, // customer2
                 'product_id' => 6,
-                'variant_id' => 20, // Size 36, Beige (Sandal Flat Wanita)
+                'variant_id' => 21, // Flat Wanita Size 37
                 'quantity' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'user_id' => 4, // customer3
-                'product_id' => 5,
-                'variant_id' => 17, // Size 41, Abu-abu (Sandal Gunung)
+                'product_id' => 1,
+                'variant_id' => 3, // Casual Pria Size 41
                 'quantity' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'user_id' => 5, // customer4
-                'product_id' => 3,
-                'variant_id' => 10, // Size 25, Pink (Sandal Anak)
-                'quantity' => 2,
+                'product_id' => 2,
+                'variant_id' => 7, // Elegant Wanita Size 37
+                'quantity' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]

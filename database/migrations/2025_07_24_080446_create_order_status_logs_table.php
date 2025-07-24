@@ -12,11 +12,13 @@ return new class extends Migration {
     {
         Schema::create('order_status_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->string('status', 50);
             $table->text('notes')->nullable();
-            $table->foreignId('changed_by')->nullable()->constrained('users')->nullOnDelete()->comment('user admin yang mengubah status');
+            $table->foreignId('changed_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
+
+            $table->index(['order_id', 'created_at']);
         });
     }
 

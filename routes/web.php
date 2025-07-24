@@ -1,82 +1,73 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+// Home Routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/promos', [HomeController::class, 'promos'])->name('promos');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
 // Authentication Routes
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login')->middleware('guest');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+});
 
-Route::post('/login', function () {
-    $credentials = request()->validate([
-        'email' => 'required|email',
-        'password' => 'required'
-    ]);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-    if (Auth::attempt($credentials)) {
-        request()->session()->regenerate();
-        return redirect()->intended('/');
-    }
+// Product Routes
+Route::get('/products', [ProductController::class, 'index'])->name('products');
+Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.detail');
 
-    return back()->withErrors([
-        'email' => 'The provided credentials do not match our records.',
-    ]);
-})->name('login.post')->middleware('guest');
+// Category Routes
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories');
+Route::get('/category/{slug}', [CategoryController::class, 'show'])->name('category.products');
 
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register')->middleware('guest');
+// Cart Routes (Authenticated)
+Route::middleware('auth')->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+    Route::put('/cart/{cart}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::post('/buy-now', [CartController::class, 'buyNow'])->name('buy.now');
+});
 
-Route::post('/register', function () {
-    $validated = request()->validate([
-        'username' => 'required|string|max:50|unique:users',
-        'full_name' => 'required|string|max:100',
-        'email' => 'required|string|email|max:100|unique:users',
-        'phone' => 'nullable|string|max:20',
-        'address' => 'nullable|string',
-        'password' => 'required|string|min:8|confirmed',
-    ]);
+// Order routes
+Route::middleware('auth')->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::post('/orders/{order}/confirm-received', [OrderController::class, 'confirmReceived'])->name('orders.confirm.received');
+});
 
-    $user = \App\Models\User::create([
-        'username' => $validated['username'],
-        'full_name' => $validated['full_name'],
-        'email' => $validated['email'],
-        'phone' => $validated['phone'] ?? null,
-        'address' => $validated['address'] ?? null,
-        'password' => bcrypt($validated['password']),
-        'role' => 'customer',
-    ]);
+// Checkout routes
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/checkout/payment/{order}', [CheckoutController::class, 'payment'])->name('checkout.payment');
+    Route::post('/checkout/payment/{order}/upload', [CheckoutController::class, 'uploadPayment'])->name('checkout.upload.payment');
+});
 
-    Auth::login($user);
+// Admin Routes
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    return redirect('/');
-})->name('register.post')->middleware('guest');
+    // Admin Order Management
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
+    Route::patch('/orders/{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('orders.update-payment-status');
+    Route::post('/orders/{order}/shipping-proof', [AdminOrderController::class, 'uploadShippingProof'])->name('orders.upload-shipping-proof');
 
-Route::post('/logout', function () {
-    Auth::logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-    return redirect('/');
-})->name('logout')->middleware('auth');
-
-// Additional routes for the navbar links
-Route::get('/products', function () {
-    return view('home'); // You can create specific pages later
-})->name('products');
-
-Route::get('/categories', function () {
-    return view('home'); // You can create specific pages later
-})->name('categories');
-
-Route::get('/promos', function () {
-    return view('home'); // You can create specific pages later
-})->name('promos');
-
-Route::get('/contact', function () {
-    return view('home'); // You can create specific pages later
-})->name('contact');
+});

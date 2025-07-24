@@ -38,6 +38,8 @@ php artisan db:seed --class=CategorySeeder
 ### Products
 
 -   8 produk sandal dengan ID 1-8
+-   Field: id, category_id, name, slug, description, price, weight, is_active, featured
+-   Stock dikelola melalui product_variants, tidak ada field stock di tabel products
 
 ### Product Images
 
@@ -48,6 +50,7 @@ php artisan db:seed --class=CategorySeeder
 
 -   Setiap produk memiliki berbagai ukuran dan warna
 -   Stok bervariasi untuk setiap varian
+-   Additional price untuk varian tertentu
 
 ### Orders
 
@@ -67,6 +70,8 @@ php artisan db:seed --class=CategorySeeder
 2. Seeder dijalankan dalam urutan yang benar sesuai foreign key constraints
 3. Data dibuat dengan timestamp yang realistis
 4. File gambar yang direferensikan perlu disiapkan di folder storage yang sesuai
+5. Product stock tidak ada di tabel products - semua stok dikelola melalui product_variants
+6. Total stok produk = jumlah stok dari semua varian aktif
 
 ## Struktur Data
 
@@ -88,3 +93,10 @@ php artisan db:seed --class=CategorySeeder
 -   `menunggu_konfirmasi`: Bukti bayar diupload, menunggu konfirmasi admin
 -   `terkonfirmasi`: Pembayaran sudah dikonfirmasi admin
 -   `ditolak`: Bukti pembayaran ditolak admin
+
+### Product Price Structure
+
+-   Base price di tabel products
+-   Additional price di product_variants untuk varian khusus
+-   Final price = base price + additional price
+-   Stock hanya dikelola di product_variants

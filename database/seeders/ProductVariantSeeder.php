@@ -16,6 +16,7 @@ class ProductVariantSeeder extends Seeder
         $variants = [
             // Product 1 - Sandal Pria Casual
             [
+                'id' => 1,
                 'product_id' => 1,
                 'size' => '39',
                 'color' => 'Hitam',
@@ -26,6 +27,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 2,
                 'product_id' => 1,
                 'size' => '40',
                 'color' => 'Hitam',
@@ -36,6 +38,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 3,
                 'product_id' => 1,
                 'size' => '41',
                 'color' => 'Hitam',
@@ -46,6 +49,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 4,
                 'product_id' => 1,
                 'size' => '42',
                 'color' => 'Hitam',
@@ -56,6 +60,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 5,
                 'product_id' => 1,
                 'size' => '40',
                 'color' => 'Coklat',
@@ -68,6 +73,7 @@ class ProductVariantSeeder extends Seeder
 
             // Product 2 - Sandal Wanita Elegant
             [
+                'id' => 6,
                 'product_id' => 2,
                 'size' => '36',
                 'color' => 'Merah',
@@ -78,6 +84,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 7,
                 'product_id' => 2,
                 'size' => '37',
                 'color' => 'Merah',
@@ -88,6 +95,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 8,
                 'product_id' => 2,
                 'size' => '38',
                 'color' => 'Merah',
@@ -98,6 +106,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 9,
                 'product_id' => 2,
                 'size' => '37',
                 'color' => 'Navy',
@@ -110,6 +119,7 @@ class ProductVariantSeeder extends Seeder
 
             // Product 3 - Sandal Anak Lucu
             [
+                'id' => 10,
                 'product_id' => 3,
                 'size' => '25',
                 'color' => 'Pink',
@@ -120,6 +130,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 11,
                 'product_id' => 3,
                 'size' => '26',
                 'color' => 'Pink',
@@ -130,6 +141,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 12,
                 'product_id' => 3,
                 'size' => '27',
                 'color' => 'Pink',
@@ -140,6 +152,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 13,
                 'product_id' => 3,
                 'size' => '26',
                 'color' => 'Biru',
@@ -152,6 +165,7 @@ class ProductVariantSeeder extends Seeder
 
             // Product 4 - Sandal Jepit Rubber
             [
+                'id' => 14,
                 'product_id' => 4,
                 'size' => '38',
                 'color' => 'Hitam',
@@ -162,6 +176,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 15,
                 'product_id' => 4,
                 'size' => '39',
                 'color' => 'Hitam',
@@ -172,6 +187,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 16,
                 'product_id' => 4,
                 'size' => '40',
                 'color' => 'Hitam',
@@ -184,6 +200,7 @@ class ProductVariantSeeder extends Seeder
 
             // Product 5 - Sandal Gunung Outdoor
             [
+                'id' => 17,
                 'product_id' => 5,
                 'size' => '41',
                 'color' => 'Abu-abu',
@@ -194,6 +211,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 18,
                 'product_id' => 5,
                 'size' => '42',
                 'color' => 'Abu-abu',
@@ -204,6 +222,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 19,
                 'product_id' => 5,
                 'size' => '43',
                 'color' => 'Abu-abu',
@@ -216,6 +235,7 @@ class ProductVariantSeeder extends Seeder
 
             // Product 6 - Sandal Flat Wanita
             [
+                'id' => 20,
                 'product_id' => 6,
                 'size' => '36',
                 'color' => 'Beige',
@@ -226,6 +246,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 21,
                 'product_id' => 6,
                 'size' => '37',
                 'color' => 'Beige',
@@ -236,6 +257,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 22,
                 'product_id' => 6,
                 'size' => '38',
                 'color' => 'Beige',
@@ -248,6 +270,7 @@ class ProductVariantSeeder extends Seeder
 
             // Product 7 - Sandal Sport Pria
             [
+                'id' => 23,
                 'product_id' => 7,
                 'size' => '40',
                 'color' => 'Biru',
@@ -258,6 +281,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 24,
                 'product_id' => 7,
                 'size' => '41',
                 'color' => 'Biru',
@@ -268,6 +292,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 25,
                 'product_id' => 7,
                 'size' => '42',
                 'color' => 'Biru',
@@ -280,6 +305,7 @@ class ProductVariantSeeder extends Seeder
 
             // Product 8 - Sandal Platform Wanita
             [
+                'id' => 26,
                 'product_id' => 8,
                 'size' => '36',
                 'color' => 'Gold',
@@ -290,6 +316,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 27,
                 'product_id' => 8,
                 'size' => '37',
                 'color' => 'Gold',
@@ -300,6 +327,7 @@ class ProductVariantSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
+                'id' => 28,
                 'product_id' => 8,
                 'size' => '38',
                 'color' => 'Gold',

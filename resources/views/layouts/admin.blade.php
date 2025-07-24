@@ -113,6 +113,33 @@
                                 <span class="ml-3">Dashboard</span>
                             </a>
                         </li>
+
+                        <li>
+                            <a href="{{ route('admin.categories.index') }}"
+                                class="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group {{ request()->routeIs('admin.categories.*') ? 'bg-gray-100' : '' }}">
+                                <svg class="w-6 h-6 text-gray-500 flex-shrink-0 group-hover:text-gray-900 transition duration-75"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="ml-3 flex-1 whitespace-nowrap">Kelola Kategori</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('admin.products.index') }}"
+                                class="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group {{ request()->routeIs('admin.products.*') ? 'bg-gray-100' : '' }}">
+                                <svg class="w-6 h-6 text-gray-500 flex-shrink-0 group-hover:text-gray-900 transition duration-75"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M10 2L3 7v11a1 1 0 001 1h5v-6a1 1 0 011-1h2a1 1 0 011 1v6h5a1 1 0 001-1V7l-7-5z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="ml-3 flex-1 whitespace-nowrap">Kelola Produk</span>
+                            </a>
+                        </li>
+
                         <li>
                             <a href="{{ route('admin.orders.index') }}"
                                 class="text-base text-gray-900 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group {{ request()->routeIs('admin.orders.*') ? 'bg-gray-100' : '' }}">

@@ -39,7 +39,7 @@ class Cart extends Model
     public function getSubtotalAttribute()
     {
         $price = $this->product->price;
-        if ($this->variant) {
+        if ($this->variant && $this->variant->additional_price) {
             $price += $this->variant->additional_price;
         }
         return $price * $this->quantity;

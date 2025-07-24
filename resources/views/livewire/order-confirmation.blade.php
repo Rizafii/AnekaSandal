@@ -1,5 +1,5 @@
 <div>
-    @if($order->status === 'sedang_dikirm' && $order->shipped_at)
+    @if($order->status === 'sedang_dikirim' && $order->shipped_at)
         <button wire:click="openModal"
             class="bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700">
             📦 Konfirmasi Terima Barang

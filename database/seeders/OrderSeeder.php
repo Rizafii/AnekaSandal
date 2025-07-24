@@ -40,7 +40,7 @@ class OrderSeeder extends Seeder
                 'id' => 2,
                 'user_id' => 3, // customer2
                 'order_number' => 'AS-' . date('Ymd') . '-002',
-                'status' => 'sedang_dikirm',
+                'status' => 'sedang_dikirim',
                 'total_amount' => 120000.00,
                 'shipping_cost' => 12000.00,
                 'final_amount' => 132000.00,

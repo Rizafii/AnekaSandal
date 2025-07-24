@@ -25,7 +25,7 @@ class OrderStatusLogSeeder extends Seeder
             ],
             [
                 'order_id' => 1,
-                'status' => 'sedang_dikirm',
+                'status' => 'sedang_dikirim',
                 'notes' => 'Pembayaran telah dikonfirmasi, barang sedang dikemas dan dikirim',
                 'changed_by' => 1, // admin
                 'created_at' => now()->subDays(4),
@@ -51,7 +51,7 @@ class OrderStatusLogSeeder extends Seeder
             ],
             [
                 'order_id' => 2,
-                'status' => 'sedang_dikirm',
+                'status' => 'sedang_dikirim',
                 'notes' => 'Pembayaran dikonfirmasi, barang sedang dalam perjalanan',
                 'changed_by' => 1, // admin
                 'created_at' => now()->subDays(1),

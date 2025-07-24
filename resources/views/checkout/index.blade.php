@@ -18,6 +18,16 @@
             </div>
         @endif
 
+        @if($errors->any())
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                <ul class="list-disc list-inside">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Order Summary -->
             <div class="lg:col-span-2">
@@ -185,6 +195,8 @@
 
     <script>
         document.getElementById('checkout-form').addEventListener('submit', function (e) {
+            console.log('Form submission started');
+
             const btn = document.getElementById('checkout-btn');
             const btnText = document.getElementById('btn-text');
             const btnLoading = document.getElementById('btn-loading');
@@ -194,25 +206,19 @@
             btnText.classList.add('hidden');
             btnLoading.classList.remove('hidden');
 
-            // Re-enable after 10 seconds as fallback
+            // Log all form data
+            const formData = new FormData(this);
+            console.log('Form data being submitted:');
+            for (let [key, value] of formData.entries()) {
+                console.log(key + ':', value);
+            }
+
+            // Re-enable after 15 seconds as fallback
             setTimeout(function () {
                 btn.disabled = false;
                 btnText.classList.remove('hidden');
                 btnLoading.classList.add('hidden');
-            }, 10000);
-        });
-
-        // Debug: Log form data when submitted
-        document.getElementById('checkout-form').addEventListener('submit', function (e) {
-            console.log('Form submitted');
-            console.log('Form action:', this.action);
-            console.log('Form method:', this.method);
-
-            // Log all form data
-            const formData = new FormData(this);
-            for (let [key, value] of formData.entries()) {
-                console.log(key, value);
-            }
+            }, 15000);
         });
     </script>
 @endsection

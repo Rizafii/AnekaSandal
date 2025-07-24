@@ -25,13 +25,24 @@ class CartIndex extends Component
 
     public function loadCartItems()
     {
-        $this->cartItems = Cart::with(['product.images', 'variant'])
-            ->where('user_id', Auth::id())
-            ->get()
-            ->toArray();
-
-        $this->total = collect($this->cartItems)->sum('subtotal');
-        $this->updateSelectedTotals();
+        if (Auth::check()) {
+            $this->cartItems = Cart::with(['product', 'variant'])
+                ->where('user_id', Auth::id())
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'product_id' => $item->product_id,
+                        'variant_id' => $item->variant_id,
+                        'quantity' => $item->quantity,
+                        'product' => $item->product,
+                        'variant' => $item->variant,
+                        'subtotal' => $item->subtotal
+                    ];
+                })
+                ->toArray();
+        }
+        $this->calculateTotal();
     }
 
     public function updatedSelectAll()
@@ -61,9 +72,8 @@ class CartIndex extends Component
     public function updateSelectedTotals()
     {
         $this->selectedCount = count($this->selectedItems);
-        $this->selectedTotal = collect($this->cartItems)
-            ->whereIn('id', $this->selectedItems)
-            ->sum('subtotal');
+        $selectedItems = collect($this->cartItems)->whereIn('id', $this->selectedItems);
+        $this->selectedTotal = $selectedItems->sum('subtotal');
     }
 
     public function increaseQuantity($cartId)
@@ -139,6 +149,11 @@ class CartIndex extends Component
 
         // Redirect to checkout with selected items
         return redirect()->route('checkout.index', ['selected_items' => $this->selectedItems]);
+    }
+
+    public function calculateTotal()
+    {
+        $this->total = collect($this->cartItems)->sum('subtotal');
     }
 
     public function render()

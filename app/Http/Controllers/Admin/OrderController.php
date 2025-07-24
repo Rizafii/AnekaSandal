@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Order;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class OrderController extends Controller
 {
@@ -66,7 +67,7 @@ class OrderController extends Controller
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
-            'status' => 'required|in:menunggu_pembayaran,sedang_dikirm,selesai,dibatalkan',
+            'status' => 'required|in:menunggu_pembayaran,sedang_dikirim,selesai,dibatalkan',
             'notes' => 'nullable|string'
         ]);
 
@@ -140,5 +141,56 @@ class OrderController extends Controller
         }
 
         return back()->with('error', 'Gagal mengunggah bukti pengiriman');
+    }
+
+    public function ship(Request $request, Order $order)
+    {
+        $request->validate([
+            'courier' => 'required|string|max:100',
+            'tracking_number' => 'required|string|max:100',
+            'shipped_at' => 'required|date',
+            'shipping_image' => 'required|image|mimes:jpeg,png,jpg|max:10240', // 10MB max
+            'notes' => 'nullable|string'
+        ], [
+            'courier.required' => 'Kurir harus diisi',
+            'tracking_number.required' => 'Nomor resi harus diisi',
+            'shipped_at.required' => 'Tanggal pengiriman harus diisi',
+            'shipping_image.required' => 'Foto barang dikirim harus diunggah',
+            'shipping_image.image' => 'File harus berupa gambar',
+            'shipping_image.mimes' => 'Format file harus JPEG, PNG, atau JPG',
+            'shipping_image.max' => 'Ukuran file maksimal 10MB'
+        ]);
+
+        try {
+            // Handle file upload
+            $shippingImagePath = null;
+            if ($request->hasFile('shipping_image')) {
+                $file = $request->file('shipping_image');
+                $filename = 'shipping_' . $order->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $shippingImagePath = $file->storeAs('shipping_images', $filename, 'public');
+            }
+
+            // Update order
+            $updateData = [
+                'status' => Order::STATUS_SEDANG_DIKIRIM,
+                'courier' => $request->courier,
+                'tracking_number' => $request->tracking_number,
+                'shipped_at' => $request->shipped_at,
+                'shipping_image' => $shippingImagePath,
+                'notes' => $request->notes
+            ];
+
+            $order->update($updateData);
+
+            // Add status log
+            $order->addStatusLog(Order::STATUS_SEDANG_DIKIRIM, 'Pesanan dikirim dengan kurir: ' . $request->courier . ', No. Resi: ' . $request->tracking_number, auth()->id());
+
+            return redirect()->route('admin.orders.show', $order->id)
+                ->with('success', 'Pesanan berhasil dikirim! Status pesanan telah diubah ke "Sedang Dikirim".');
+
+        } catch (\Exception $e) {
+            \Log::error('Error in ship method: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

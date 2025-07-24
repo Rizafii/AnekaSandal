@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained()->restrictOnDelete();
             $table->string('order_number', 50)->unique();
-            $table->enum('status', ['menunggu_pembayaran', 'sedang_dikirm', 'selesai', 'dibatalkan'])->default('menunggu_pembayaran');
+            $table->enum('status', ['menunggu_pembayaran', 'sedang_dikirim', 'selesai', 'dibatalkan'])->default('menunggu_pembayaran');
             $table->decimal('total_amount', 10, 2);
             $table->decimal('shipping_cost', 10, 2)->default(0);
             $table->decimal('final_amount', 10, 2);
@@ -31,7 +31,9 @@ return new class extends Migration {
             $table->enum('payment_status', ['belum_bayar', 'menunggu_konfirmasi', 'terkonfirmasi', 'ditolak'])->default('belum_bayar');
 
             // Tracking
+            $table->string('courier', 100)->nullable();
             $table->string('tracking_number', 100)->nullable();
+            $table->string('shipping_image')->nullable()->comment('foto barang dikirim');
             $table->timestamp('shipped_at')->nullable();
             $table->timestamp('delivered_at')->nullable();
 

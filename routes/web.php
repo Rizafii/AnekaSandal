@@ -10,6 +10,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 
 // Home Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -63,11 +65,21 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Admin Category Management
+    Route::resource('categories', AdminCategoryController::class)->except(['destroy']);
+
+    // Admin Product Management
+    Route::resource('products', AdminProductController::class);
+    Route::patch('/products/{product}/toggle-status', [AdminProductController::class, 'toggleStatus'])->name('products.toggle-status');
+
+    // AJAX endpoint for quick category creation
+    Route::post('/categories/quick-create', [AdminCategoryController::class, 'quickCreate'])->name('categories.quick-create');
+
     // Admin Order Management
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
     Route::patch('/orders/{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('orders.update-payment-status');
     Route::post('/orders/{order}/shipping-proof', [AdminOrderController::class, 'uploadShippingProof'])->name('orders.upload-shipping-proof');
-
+    Route::patch('/orders/{order}/ship', [AdminOrderController::class, 'ship'])->name('orders.ship');
 });

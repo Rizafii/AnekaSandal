@@ -21,7 +21,9 @@ class Order extends Model
         'shipping_postal_code',
         'payment_proof',
         'payment_status',
+        'courier',
         'tracking_number',
+        'shipping_image',
         'shipped_at',
         'delivered_at',
         'notes'
@@ -35,9 +37,9 @@ class Order extends Model
         'delivered_at' => 'datetime'
     ];
 
-    // Status constants - Fixed typo
+    // Status constants
     const STATUS_MENUNGGU_PEMBAYARAN = 'menunggu_pembayaran';
-    const STATUS_SEDANG_DIKIRIM = 'sedang_dikirim'; // Fixed: was 'sedang_dikirm'
+    const STATUS_SEDANG_DIKIRIM = 'sedang_dikirim'; // Updated to match database
     const STATUS_SELESAI = 'selesai';
     const STATUS_DIBATALKAN = 'dibatalkan';
 

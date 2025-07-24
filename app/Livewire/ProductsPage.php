@@ -14,12 +14,16 @@ class ProductsPage extends Component
     public $categoryFilter = '';
     public $search = '';
 
-    public $products;
-    public $categories;
+    public $products = [];
+    public $categories = [];
+    public $currentPage = 1;
+    public $lastPage = 1;
+    public $total = 0;
+    public $perPage = 24;
 
     public function mount()
     {
-        $this->categories = Category::all();
+        $this->categories = Category::all()->toArray();
         $this->loadProducts();
     }
 
@@ -71,27 +75,93 @@ class ProductsPage extends Component
                 break;
         }
 
-        $this->products = $query->paginate(24);
+        $paginatedProducts = $query->paginate($this->perPage, ['*'], 'page', $this->currentPage);
+
+        // Convert to array format for Livewire
+        $this->products = $paginatedProducts->getCollection()->map(function ($product) {
+            return [
+                'id' => $product->id,
+                'category_id' => $product->category_id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'description' => $product->description,
+                'price' => $product->price,
+                'weight' => $product->weight,
+                'is_active' => $product->is_active,
+                'featured' => $product->featured,
+                'created_at' => $product->created_at,
+                'updated_at' => $product->updated_at,
+                'images' => $product->images->toArray(),
+                'variants' => $product->variants->toArray(),
+                // Calculate total stock from variants
+                'total_stock' => $product->variants->sum('stock'),
+                // Get primary image
+                'primary_image' => $product->images->where('is_primary', true)->first()?->image_path ??
+                    $product->images->first()?->image_path,
+            ];
+        })->toArray();
+
+        $this->currentPage = $paginatedProducts->currentPage();
+        $this->lastPage = $paginatedProducts->lastPage();
+        $this->total = $paginatedProducts->total();
     }
 
     public function updatedSortBy()
     {
+        $this->currentPage = 1;
         $this->loadProducts();
     }
 
     public function updatedPriceRange()
     {
+        $this->currentPage = 1;
         $this->loadProducts();
     }
 
     public function updatedCategoryFilter()
     {
+        $this->currentPage = 1;
         $this->loadProducts();
     }
 
     public function updatedSearch()
     {
+        $this->currentPage = 1; // Reset to first page when searching
         $this->loadProducts();
+    }
+
+    public function nextPage()
+    {
+        if ($this->currentPage < $this->lastPage) {
+            $this->currentPage++;
+            $this->loadProducts();
+        }
+    }
+
+    public function previousPage()
+    {
+        if ($this->currentPage > 1) {
+            $this->currentPage--;
+            $this->loadProducts();
+        }
+    }
+
+    public function gotoPage($page)
+    {
+        if ($page >= 1 && $page <= $this->lastPage) {
+            $this->currentPage = $page;
+            $this->loadProducts();
+        }
+    }
+
+    public function getFirstItem()
+    {
+        return ($this->currentPage - 1) * $this->perPage + 1;
+    }
+
+    public function getLastItem()
+    {
+        return min($this->currentPage * $this->perPage, $this->total);
     }
 
     public function render()

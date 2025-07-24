@@ -27,35 +27,17 @@
                     <div class="relative">
                         <form action="{{ route('admin.orders.index') }}" method="GET" id="statusFilterForm">
                             <input type="hidden" name="search" value="{{ request('search') }}">
-                            <input type="hidden" name="payment_status" value="{{ request('payment_status') }}">
                             <select name="status" onchange="document.getElementById('statusFilterForm').submit()"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                                 <option value="">Semua Status</option>
                                 <option value="menunggu_pembayaran" {{ request('status') === 'menunggu_pembayaran' ? 'selected' : '' }}>Menunggu Pembayaran</option>
-                                <option value="sedang_dikirm" {{ request('status') === 'sedang_dikirm' ? 'selected' : '' }}>
+                                <option value="sedang_diproses" {{ request('status') === 'sedang_diproses' ? 'selected' : '' }}>Sedang Diproses</option>
+                                <option value="sedang_dikirim" {{ request('status') === 'sedang_dikirim' ? 'selected' : '' }}>
                                     Sedang Dikirim</option>
                                 <option value="selesai" {{ request('status') === 'selesai' ? 'selected' : '' }}>Selesai
                                 </option>
                                 <option value="dibatalkan" {{ request('status') === 'dibatalkan' ? 'selected' : '' }}>
                                     Dibatalkan</option>
-                            </select>
-                        </form>
-                    </div>
-
-                    <!-- Payment Status Filter -->
-                    <div class="relative">
-                        <form action="{{ route('admin.orders.index') }}" method="GET" id="paymentStatusFilterForm">
-                            <input type="hidden" name="search" value="{{ request('search') }}">
-                            <input type="hidden" name="status" value="{{ request('status') }}">
-                            <select name="payment_status"
-                                onchange="document.getElementById('paymentStatusFilterForm').submit()"
-                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                                <option value="">Semua Status Pembayaran</option>
-                                <option value="belum_bayar" {{ request('payment_status') === 'belum_bayar' ? 'selected' : '' }}>Belum Bayar</option>
-                                <option value="menunggu_konfirmasi" {{ request('payment_status') === 'menunggu_konfirmasi' ? 'selected' : '' }}>Menunggu Konfirmasi</option>
-                                <option value="terkonfirmasi" {{ request('payment_status') === 'terkonfirmasi' ? 'selected' : '' }}>Terkonfirmasi</option>
-                                <option value="ditolak" {{ request('payment_status') === 'ditolak' ? 'selected' : '' }}>
-                                    Ditolak</option>
                             </select>
                         </form>
                     </div>
@@ -68,7 +50,7 @@
         <div class="overflow-x-auto">
             <div class="align-middle inline-block min-w-full">
                 <div class="shadow overflow-hidden">
-                    <table class="table-fixed min-w-full divide-y divide-gray-200">
+                    <table class="table-fixed min-w-7xl  divide-y divide-gray-200">
                         <thead class="bg-gray-100">
                             <tr>
                                 <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase">
@@ -82,9 +64,6 @@
                                 </th>
                                 <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase">
                                     Status Pesanan
-                                </th>
-                                <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase">
-                                    Status Pembayaran
                                 </th>
                                 <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase">
                                     Tanggal
@@ -105,7 +84,7 @@
                                     </td>
                                     <td class="p-4 whitespace-nowrap text-base font-medium text-gray-900">
                                         <div>
-                                            <div class="text-sm font-medium text-gray-900">{{ $order->user->name ?? 'N/A' }}
+                                            <div class="text-sm font-medium text-gray-900">{{ $order->user->username ?? 'N/A' }}
                                             </div>
                                             <div class="text-sm text-gray-500">{{ $order->shipping_name }}</div>
                                             <div class="text-sm text-gray-500">{{ $order->shipping_phone }}</div>
@@ -117,8 +96,9 @@
                                     <td class="p-4 whitespace-nowrap text-base font-medium">
                                         @php
                                             $statusClass = match ($order->status) {
-                                                'menunggu_pembayaran' => 'bg-yellow-100 text-yellow-800',
-                                                'sedang_dikirm' => 'bg-blue-100 text-blue-800',
+                                                'menunggu_pembayaran' => 'bg-gray-100 text-gray-800',
+                                                'sedang_diproses' => 'bg-blue-100 text-blue-800',
+                                                'sedang_dikirim' => 'bg-yellow-100 text-yellow-800',
                                                 'selesai' => 'bg-green-100 text-green-800',
                                                 'dibatalkan' => 'bg-red-100 text-red-800',
                                                 default => 'bg-gray-100 text-gray-800'
@@ -128,22 +108,7 @@
                                             class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ $statusClass }}">
                                             {{ ucfirst(str_replace('_', ' ', $order->status)) }}
                                         </span>
-                                    </td>
-                                    <td class="p-4 whitespace-nowrap text-base font-medium">
-                                        @php
-                                            $paymentStatusClass = match ($order->payment_status) {
-                                                'belum_bayar' => 'bg-gray-100 text-gray-800',
-                                                'menunggu_konfirmasi' => 'bg-orange-100 text-orange-800',
-                                                'terkonfirmasi' => 'bg-green-100 text-green-800',
-                                                'ditolak' => 'bg-red-100 text-red-800',
-                                                default => 'bg-gray-100 text-gray-800'
-                                            };
-                                        @endphp
-                                        <span
-                                            class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ $paymentStatusClass }}">
-                                            {{ ucfirst(str_replace('_', ' ', $order->payment_status)) }}
-                                        </span>
-                                        @if($order->payment_status === 'menunggu_konfirmasi')
+                                        @if($order->status === 'menunggu_pembayaran')
                                             <div class="mt-1">
                                                 <span
                                                     class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
@@ -161,11 +126,17 @@
                                             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center">
                                             Detail
                                         </a>
+                                        @if(in_array($order->status, ['sedang_diproses', 'menunggu_pembayaran']))
+                                            <button onclick="openShippingModal({{ $order->id }})"
+                                                class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-3 py-2 text-center inline-flex items-center">
+                                                Kirim
+                                            </button>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="p-4 text-center text-gray-500">
+                                    <td colspan="6" class="p-4 text-center text-gray-500">
                                         Tidak ada pesanan ditemukan
                                     </td>
                                 </tr>
@@ -184,5 +155,11 @@
             {{ $orders->appends(request()->query())->links() }}
         </div>
     @endif
+
+    <script>
+        function openShippingModal(orderId) {
+            window.location.href = `/admin/orders/${orderId}#shipping-form`;
+        }
+    </script>
 
 @endsection

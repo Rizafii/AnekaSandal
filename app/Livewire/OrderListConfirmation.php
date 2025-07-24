@@ -42,7 +42,7 @@ class OrderListConfirmation extends Component
             return;
         }
 
-        if ($this->order->status !== 'sedang_dikirm') {
+        if ($this->order->status !== 'sedang_dikirim') {
             session()->flash('error', 'Pesanan tidak dapat dikonfirmasi.');
             return;
         }

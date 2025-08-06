@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&display=swap");
 @import "tailwindcss";
 
 @source "../node_modules/flowbite";
@@ -12,7 +13,7 @@
         "Noto Color Emoji";
 
     /* Primary Color - Blue */
-    --color-primary-50: #eff6ff;
+    --color-primary: #44624a;
     --color-primary-100: #dbeafe;
     --color-primary-200: #bfdbfe;
     --color-primary-300: #93c5fd;
@@ -23,4 +24,8 @@
     --color-primary-800: #1e40af;
     --color-primary-900: #1e3a8a;
     --color-primary-950: #172554;
+}
+
+* {
+    font-family: "Cabin Sketch", sans-serif;
 }

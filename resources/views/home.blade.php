@@ -1,7 +1,7 @@
 @extends('app')
 
 @section('content')
-    <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div class="min-h-screen ">
         <!-- Hero Section -->
         @include('partials.hero-section')
         @include('partials.why')
@@ -10,7 +10,7 @@
         @livewire('category-section')
 
         <!-- Latest Products Section -->
-        @include('partials.latest-products')
+        @include('partials.latest-products', ['products' => $latestProducts])
         @include('partials.map-contact')
     </div>
 @endsection

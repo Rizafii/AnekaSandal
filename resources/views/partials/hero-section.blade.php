@@ -1,5 +1,5 @@
 <!-- Hero Section -->
-<section class="p-3">
+<section class="p-3 bg-secondary">
     <div
         class="grid rounded-2xl px-4 pt-52 py-36 mx-auto bg-[url('https://s.hdnux.com/photos/01/20/53/33/21149391/4/1920x0.jpg')] bg-center bg-cover relative">
         <!-- Dark overlay -->
@@ -10,7 +10,7 @@
                 class="max-w-xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
                 Koleksi Sandal Berkualitas Tinggi</h1>
             <p class="max-w-xl mb-6 font-normal text-white lg:mb-8 md:text-lg lg:text-xl ">
-                Temukan sandal berkualitas tinggi yang dirancang untuk kenyamanan dan gaya.
+                Temukan sandal berkualitas tinggi yang dirancang untuk kenyamanan dan gaya anda.
             </p>
             <div class="cta">
                 <a href="#"
@@ -24,7 +24,7 @@
                     </svg>
                 </a>
                 <a href="#"
-                    class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                    class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-primary rounded-lg bg-white">
                     Hubungi Kami
                 </a>
             </div>

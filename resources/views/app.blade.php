@@ -30,6 +30,9 @@
 
     @include('partials.footer')
 
+    <!-- Additional Scripts -->
+    @stack('scripts')
+
     <!-- Livewire Scripts -->
     @livewireScripts
 </body>

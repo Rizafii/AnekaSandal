@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\ProductVariant;
 use App\Models\Products;
 use App\Models\Cart;
+use App\Models\Testimonial;
 
 class ProductDetail extends Component
 {
@@ -23,6 +24,31 @@ class ProductDetail extends Component
     {
         $this->product = $product;
         $this->loadAvailableVariants();
+        $this->loadTestimonials();
+    }
+
+    protected function loadTestimonials()
+    {
+        $testimonials = Testimonial::with('user')
+            ->where('product_id', $this->product['id'])
+            // ->where('is_approved', true)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($testimonial) {
+                return [
+                    'id' => $testimonial->id,
+                    'user' => [
+                        'name' => $testimonial->user->name ?? 'User'
+                    ],
+                    'rating' => $testimonial->rating,
+                    'review' => $testimonial->review,
+                    'image_path' => $testimonial->image_path,
+                    'created_at' => $testimonial->created_at->toISOString()
+                ];
+            })
+            ->toArray();
+
+        $this->product['testimonials'] = $testimonials;
     }
 
     protected function loadAvailableVariants()

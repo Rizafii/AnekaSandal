@@ -41,6 +41,11 @@ class Product extends Model
         return $this->hasMany(ProductVariant::class);
     }
 
+    public function testimonials(): HasMany
+    {
+        return $this->hasMany(Testimonial::class);
+    }
+
     // Accessors
     public function getFormattedPriceAttribute()
     {

@@ -68,6 +68,11 @@ class Order extends Model
         return $this->hasMany(OrderStatusLog::class);
     }
 
+    public function testimonials()
+    {
+        return $this->hasMany(Testimonial::class);
+    }
+
     // Boot method to generate order number
     protected static function boot()
     {

@@ -204,12 +204,6 @@
                                                 <label class="text-sm font-semibold text-gray-700">Alamat:</label>
                                                 <p class="text-gray-900 bg-gray-50 px-3 py-2 rounded-lg border text-sm leading-relaxed">{{ $order->shipping_address }}</p>
                                             </div>
-                                            @if($order->shipping_city)
-                                                <div class="flex flex-col gap-1">
-                                                    <label class="text-sm font-semibold text-gray-700">Kota:</label>
-                                                    <p class="text-gray-900">{{ $order->shipping_city }}</p>
-                                                </div>
-                                            @endif
                                             @if($order->shipping_postal_code)
                                                 <div class="flex flex-col gap-1">
                                                     <label class="text-sm font-semibold text-gray-700">Kode Pos:</label>

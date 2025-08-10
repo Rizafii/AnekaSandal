@@ -114,7 +114,8 @@
                                             </div>
                                             <div class="flex-1 min-w-0">
                                                 <h5 class="text-sm font-semibold text-gray-900 truncate">
-                                                    {{ $item->product->name }}</h5>
+                                                    {{ $item->product->name }}
+                                                </h5>
                                                 @if($item->size)
                                                     <p class="text-xs text-gray-500 mt-1">Ukuran: {{ $item->size }}</p>
                                                 @endif
@@ -192,6 +193,13 @@
                                         <p class="text-sm text-gray-900">{{ $order->shipped_at->format('d M Y H:i') }}</p>
                                     </div>
                                 @endif
+
+                                @if($order->delivered_at)
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500 mb-1">Tanggal Selesai</label>
+                                        <p class="text-sm text-gray-900">{{ $order->delivered_at->format('d M Y H:i') }}</p>
+                                    </div>
+                                @endif
                             </div>
 
                             @if($order->shipping_image)
@@ -210,6 +218,54 @@
                             @endif
                         </div>
                     </div>
+
+                    <!-- Order Status History -->
+                    @if($order->statusLogs->count() > 0)
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+                            <div class="p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-6">Riwayat Status Pesanan</h3>
+                                <div class="space-y-4">
+                                    @foreach($order->statusLogs->sortByDesc('created_at') as $log)
+                                        <div class="flex items-start space-x-4 p-4 bg-gray-50 rounded-xl">
+                                            <div class="flex-shrink-0">
+                                                @php
+                                                    $statusIcon = match ($log->status) {
+                                                        'menunggu_pembayaran' => 'fas fa-clock text-gray-500',
+                                                        'sedang_dikirim' => 'fas fa-truck text-blue-500',
+                                                        'selesai' => 'fas fa-check-circle text-emerald-500',
+                                                        'dibatalkan' => 'fas fa-times-circle text-red-500',
+                                                        'terkonfirmasi' => 'fas fa-check text-emerald-500',
+                                                        'menunggu_konfirmasi' => 'fas fa-hourglass-half text-yellow-500',
+                                                        'ditolak' => 'fas fa-times text-red-500',
+                                                        default => 'fas fa-info-circle text-gray-500'
+                                                    };
+                                                @endphp
+                                                <i class="{{ $statusIcon }} text-lg"></i>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center justify-between">
+                                                    <h4 class="text-sm font-semibold text-gray-900">
+                                                        Status: {{ ucfirst(str_replace('_', ' ', $log->status)) }}
+                                                    </h4>
+                                                    <span class="text-xs text-gray-500">
+                                                        {{ $log->created_at->format('d M Y H:i') }}
+                                                    </span>
+                                                </div>
+                                                @if($log->notes)
+                                                    <p class="text-sm text-gray-600 mt-1">{{ $log->notes }}</p>
+                                                @endif
+                                                @if($log->changedBy)
+                                                    <p class="text-xs text-gray-500 mt-2">
+                                                        Diubah oleh: {{ $log->changedBy->username ?? 'System' }}
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Right Column -->
@@ -246,6 +302,56 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Status Management Section -->
+                    @if($order->status === 'sedang_dikirim')
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+                            <div class="p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-6">Ubah Status Pesanan</h3>
+
+                                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-info-circle text-blue-400 text-xl"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h4 class="text-sm font-semibold text-blue-800">Status Saat Ini: Sedang Dikirim</h4>
+                                            <div class="mt-1 text-sm text-blue-700">
+                                                Anda dapat mengubah status pesanan menjadi "Selesai" jika barang sudah sampai ke
+                                                customer.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+
+                                    <input type="hidden" name="status" value="selesai">
+
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
+                                                Catatan (Opsional)
+                                            </label>
+                                            <textarea name="notes" id="notes" rows="3"
+                                                class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                                placeholder="Tambahkan catatan untuk perubahan status (opsional)">{{ old('notes') }}</textarea>
+                                        </div>
+
+                                        <div class="flex justify-end pt-4">
+                                            <button type="submit"
+                                                class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-6 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors"
+                                                onclick="return confirm('Apakah Anda yakin ingin mengubah status pesanan menjadi Selesai?')">
+                                                <i class="fas fa-check-circle mr-2"></i>Tandai Selesai
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    @endif
 
                     <!-- Shipping Action Form -->
                     @if(!in_array($order->status, ['sedang_dikirim', 'selesai', 'dibatalkan']))

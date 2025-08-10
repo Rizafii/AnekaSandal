@@ -74,14 +74,43 @@ class OrderController extends Controller
         $oldStatus = $order->status;
         $newStatus = $request->status;
 
-        $order->update([
-            'status' => $newStatus
-        ]);
+        // Additional validation for status transitions
+        if ($oldStatus === 'selesai' && $newStatus !== 'selesai') {
+            return back()->with('error', 'Pesanan yang sudah selesai tidak dapat diubah statusnya.');
+        }
+
+        if ($oldStatus === 'dibatalkan' && $newStatus !== 'dibatalkan') {
+            return back()->with('error', 'Pesanan yang sudah dibatalkan tidak dapat diubah statusnya.');
+        }
+
+        $updateData = ['status' => $newStatus];
+
+        // If marking as completed, set delivered_at timestamp
+        if ($newStatus === Order::STATUS_SELESAI && $oldStatus !== Order::STATUS_SELESAI) {
+            $updateData['delivered_at'] = now();
+        }
+
+        $order->update($updateData);
 
         // Log status change
-        $order->addStatusLog($newStatus, $request->notes, Auth::id());
+        $notes = $request->notes;
+        if ($newStatus === Order::STATUS_SELESAI && $oldStatus === Order::STATUS_SEDANG_DIKIRIM) {
+            $notes = $notes ? $notes : 'Pesanan ditandai selesai oleh admin';
+        }
 
-        return back()->with('success', "Status pesanan berhasil diubah dari {$oldStatus} ke {$newStatus}");
+        $order->addStatusLog($newStatus, $notes, Auth::id());
+
+        $statusLabels = [
+            'menunggu_pembayaran' => 'Menunggu Pembayaran',
+            'sedang_dikirim' => 'Sedang Dikirim',
+            'selesai' => 'Selesai',
+            'dibatalkan' => 'Dibatalkan'
+        ];
+
+        $oldStatusLabel = $statusLabels[$oldStatus] ?? $oldStatus;
+        $newStatusLabel = $statusLabels[$newStatus] ?? $newStatus;
+
+        return back()->with('success', "Status pesanan berhasil diubah dari {$oldStatusLabel} ke {$newStatusLabel}");
     }
 
     public function updatePaymentStatus(Request $request, Order $order)

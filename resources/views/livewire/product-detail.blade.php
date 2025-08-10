@@ -1,4 +1,4 @@
-<div class="px-3 py-10 bg-secondary">
+<div class="px-3 py-10 mt-16 bg-secondary">
     <div class="max-w-7xl mx-auto space-y-6">
         <!-- Breadcrumb -->
         <nav class="text-sm" aria-label="Breadcrumb">
@@ -38,7 +38,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
             <!-- Gallery -->
             <div class="space-y-4">
-                <div class="group relative rounded-2xl overflow-hidden shadow-lg bg-gray-100 aspect-square">
+                <div class="group relative rounded-2xl overflow-hidden shadow-lg bg-gray-100 h-full">
                     @if(isset($product['images']) && is_array($product['images']) && count($product['images']) > 0)
                         <img id="mainProductImage"
                             src="{{ $product['images'][0]['image_url'] ?? 'https://via.placeholder.com/600x600/f3f4f6/6b7280?text=No+Image' }}"

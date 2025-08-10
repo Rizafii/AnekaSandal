@@ -1,19 +1,29 @@
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <div class="container mx-auto px-4 py-8">
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                Kategori Sandal
-            </h1>
-            <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Temukan berbagai koleksi sandal sesuai dengan kategori yang Anda inginkan
-            </p>
+<div class="px-3 py-10 mt-16 bg-secondary">
+    <div class="w-full mx-auto space-y-8">
+        <!-- Breadcrumb -->
+        <nav class="text-sm" aria-label="Breadcrumb">
+            <ol class="flex flex-wrap items-center gap-2 text-gray-500">
+                <li><a href="{{ route('home') }}" class="hover:text-primary transition-colors">Beranda</a></li>
+                <li class="text-gray-400">/</li>
+                <li class="text-gray-700 font-medium">Kategori</li>
+            </ol>
+        </nav>
+
+        <!-- Header Section -->
+        <div class="text-center space-y-4">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-2xl mb-6 shadow-lg">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 7a2 2 0 012-2h10a2 2 0 012 2v2M5 11h14"></path>
+                </svg>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-800">Kategori Sandal</h1>
+            <p class="text-gray-600 max-w-2xl mx-auto">Temukan berbagai koleksi sandal sesuai dengan kategori yang Anda inginkan</p>
         </div>
 
         <!-- Search Bar -->
-        <div class="max-w-md mx-auto mb-8">
+        <div class="max-w-md mx-auto">
             <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
@@ -21,134 +31,202 @@
                 <input 
                     type="text" 
                     wire:model.live="search"
-                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+                    class="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-colors" 
                     placeholder="Cari kategori..."
                 >
+                @if($search)
+                    <button 
+                        wire:click="$set('search', '')"
+                        class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
+                    >
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                @endif
             </div>
         </div>
 
         <!-- Categories Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @forelse($categories as $category)
                 <div 
                     wire:click="selectCategory({{ $category->id }})"
-                    class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:scale-105"
+                    class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 border border-gray-100/50 overflow-hidden"
                 >
                     <!-- Category Image -->
-                    <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 relative overflow-hidden">
+                    <div class="h-48 bg-gradient-to-br from-primary/10 to-primary/5 relative overflow-hidden">
                         @if($category->image)
                             <img 
-                                src="{{ asset('storage/' . $category->image) }}" 
+                                src="{{ $category->image }}" 
                                 alt="{{ $category->name }}"
-                                class="w-full h-full object-cover"
+                                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                             >
                         @else
                             <div class="flex items-center justify-center h-full">
-                                <svg class="w-16 h-16 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
+                                <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 7a2 2 0 012-2h10a2 2 0 012 2v2M5 11h14"></path>
+                                    </svg>
+                                </div>
                             </div>
                         @endif
                         
-                        <!-- Overlay -->
-                        <div class="absolute inset-0 bg-black bg-opacity-20 hover:bg-opacity-30 transition-all duration-300"></div>
+                        <!-- Hover Overlay -->
+                        <div class="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-all duration-300"></div>
                         
-                        <!-- Category Name Overlay -->
-                        <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
-                            <h3 class="text-white font-bold text-lg">{{ $category->name }}</h3>
-                        </div>
-                    </div>
-
-                    <!-- Category Info -->
-                    <div class="p-4">
-                        <p class="text-gray-600 dark:text-gray-300 text-sm line-clamp-2">
-                            {{ $category->description ?: 'Deskripsi tidak tersedia' }}
-                        </p>
-                        
-                        <div class="mt-3 flex items-center justify-between">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                {{ $category->slug }}
-                            </span>
-                            
-                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <!-- Arrow Icon -->
+                        <div class="absolute top-4 right-4 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                             </svg>
                         </div>
                     </div>
+
+                    <!-- Category Info -->
+                    <div class="p-6 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors">
+                                {{ $category->name }}
+                            </h3>
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-primary/10 text-primary">
+                                {{ $category->products_count ?? 0 }} Item
+                            </span>
+                        </div>
+                        
+                        <p class="text-gray-600 text-sm leading-relaxed line-clamp-2">
+                            {{ $category->description ?: 'Koleksi sandal berkualitas tinggi untuk berbagai kebutuhan dan aktivitas Anda' }}
+                        </p>
+                        
+                        <div class="flex items-center justify-between pt-2">
+                            <span class="inline-flex items-center text-xs font-medium text-gray-500">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                </svg>
+                                {{ $category->slug }}
+                            </span>
+                            
+                            <div class="flex items-center text-primary font-semibold text-sm opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                                Lihat Produk
+                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             @empty
-                <div class="col-span-full text-center py-12">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.5-.886-6.134-2.341a12 12 0 01-.866-1.414A16.83 16.83 0 005 12a16.83 16.83 0 00.866-1.414A12 12 0 0112 9c2.34 0 4.5.886 6.134 2.341"></path>
-                    </svg>
-                    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Tidak ada kategori</h3>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                <div class="col-span-full">
+                    <div class="text-center py-16">
+                        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 7a2 2 0 012-2h10a2 2 0 012 2v2M5 11h14"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">
+                            @if($search)
+                                Kategori tidak ditemukan
+                            @else
+                                Belum ada kategori
+                            @endif
+                        </h3>
+                        <p class="text-gray-600 mb-6 max-w-md mx-auto">
+                            @if($search)
+                                Tidak ditemukan kategori dengan kata kunci "{{ $search }}". Coba gunakan kata kunci lain.
+                            @else
+                                Belum ada kategori yang tersedia saat ini. Silakan cek kembali nanti.
+                            @endif
+                        </p>
                         @if($search)
-                            Tidak ditemukan kategori dengan kata kunci "{{ $search }}"
-                        @else
-                            Belum ada kategori yang tersedia
+                            <button 
+                                wire:click="$set('search', '')"
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-colors"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                Hapus Filter
+                            </button>
                         @endif
-                    </p>
+                    </div>
                 </div>
             @endforelse
         </div>
 
         <!-- Selected Category Modal -->
         @if($selectedCategory)
-            <div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" wire:click="clearSelection">
-                <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800" wire:click.stop>
-                    <div class="mt-3">
-                        <!-- Close Button -->
-                        <button 
-                            wire:click="clearSelection"
-                            class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-                        >
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
+            <div class="fixed inset-0 bg-black/50 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4" wire:click="clearSelection">
+                <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-auto border border-gray-100" wire:click.stop>
+                    <!-- Close Button -->
+                    <button 
+                        wire:click="clearSelection"
+                        class="absolute top-4 right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-600 hover:text-gray-800 transition-colors z-10"
+                    >
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
 
-                        <!-- Category Image -->
-                        <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg mb-4 overflow-hidden">
-                            @if($selectedCategory->image)
-                                <img 
-                                    src="{{ asset('storage/' . $selectedCategory->image) }}" 
-                                    alt="{{ $selectedCategory->name }}"
-                                    class="w-full h-full object-cover"
-                                >
-                            @else
-                                <div class="flex items-center justify-center h-full">
-                                    <svg class="w-16 h-16 text-white opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    <!-- Category Image -->
+                    <div class="h-48 bg-gradient-to-br from-primary/10 to-primary/5 rounded-t-2xl overflow-hidden">
+                        @if($selectedCategory->image)
+                            <img 
+                                src="{{$selectedCategory->image }}" 
+                                alt="{{ $selectedCategory->name }}"
+                                class="w-full h-full object-cover"
+                            >
+                        @else
+                            <div class="flex items-center justify-center h-full">
+                                <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 7a2 2 0 012-2h10a2 2 0 012 2v2M5 11h14"></path>
                                     </svg>
                                 </div>
-                            @endif
-                        </div>
+                            </div>
+                        @endif
+                    </div>
 
-                        <!-- Category Details -->
-                        <div class="text-center">
-                            <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                    <!-- Category Details -->
+                    <div class="p-8 space-y-6">
+                        <div class="text-center space-y-3">
+                            <h3 class="text-2xl font-bold text-gray-900">
                                 {{ $selectedCategory->name }}
                             </h3>
                             
-                            <p class="text-gray-600 dark:text-gray-300 mb-4">
-                                {{ $selectedCategory->description ?: 'Deskripsi tidak tersedia' }}
-                            </p>
-
-                            <div class="flex justify-center space-x-3">
-                                <button 
-                                    wire:click="clearSelection"
-                                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
-                                >
-                                    Tutup
-                                </button>
-                                <a 
-                                    href="/products?category={{ $selectedCategory->slug }}"
-                                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                                >
-                                    Lihat Produk
-                                </a>
+                            <div class="flex items-center justify-center gap-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-lg text-sm font-semibold bg-primary/10 text-primary">
+                                    {{ $selectedCategory->products_count ?? 0 }} Produk
+                                </span>
+                                <span class="inline-flex items-center text-sm font-medium text-gray-500">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                    </svg>
+                                    {{ $selectedCategory->slug }}
+                                </span>
                             </div>
+                            
+                            <p class="text-gray-600 leading-relaxed">
+                                {{ $selectedCategory->description ?: 'Koleksi sandal berkualitas tinggi untuk berbagai kebutuhan dan aktivitas Anda.' }}
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button 
+                                wire:click="clearSelection"
+                                class="flex-1 px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-semibold transition-colors"
+                            >
+                                Tutup
+                            </button>
+                            <a 
+                                href="/products?category={{ $selectedCategory->slug }}"
+                                class="flex-1 px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-semibold transition-colors text-center inline-flex items-center justify-center gap-2"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                                Lihat Produk
+                            </a>
                         </div>
                     </div>
                 </div>

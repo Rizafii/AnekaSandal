@@ -26,17 +26,18 @@ class CategoryController extends Controller
     {
         $query = Category::withCount('products');
 
-        // Search by name
+        // Search filter
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Filter by status
+        // Status filter
         if ($request->filled('status')) {
-            $query->where('is_active', $request->status === 'active');
+            $isActive = $request->status === 'active' ? 1 : 0;
+            $query->where('is_active', $isActive);
         }
 
-        $categories = $query->orderBy('created_at', 'desc')->paginate(20);
+        $categories = $query->orderBy('created_at', 'desc')->paginate(12);
 
         return view('admin.categories.index', compact('categories'));
     }
@@ -48,31 +49,35 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'is_active' => 'boolean',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_active' => 'required|boolean'
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
-        $validated['is_active'] = $request->has('is_active');
+        $data = $request->all();
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('categories', 'public');
-            $validated['image'] = Storage::url($path);
+        // Generate slug from name
+        $data['slug'] = Str::slug($request->name);
+
+        // Ensure slug is unique
+        $originalSlug = $data['slug'];
+        $counter = 1;
+        while (Category::where('slug', $data['slug'])->exists()) {
+            $data['slug'] = $originalSlug . '-' . $counter;
+            $counter++;
         }
 
-        Category::create($validated);
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('categories', 'public');
+            $data['image'] = asset('storage/' . $imagePath);
+        }
 
-        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil ditambahkan');
-    }
+        Category::create($data);
 
-    public function show(Category $category)
-    {
-        $category->load('products');
-        return view('admin.categories.show', compact('category'));
+        return redirect()->route('admin.categories.index')
+            ->with('success', 'Kategori berhasil ditambahkan.');
     }
 
     public function edit(Category $category)
@@ -82,61 +87,141 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'is_active' => 'boolean',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_active' => 'required|boolean'
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
-        $validated['is_active'] = $request->has('is_active');
+        $data = $request->all();
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($category->image) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $category->image));
+        // Generate slug from name if name changed
+        if ($request->name !== $category->name) {
+            $data['slug'] = Str::slug($request->name);
+
+            // Ensure slug is unique (exclude current record)
+            $originalSlug = $data['slug'];
+            $counter = 1;
+            while (Category::where('slug', $data['slug'])->where('id', '!=', $category->id)->exists()) {
+                $data['slug'] = $originalSlug . '-' . $counter;
+                $counter++;
             }
-
-            $path = $request->file('image')->store('categories', 'public');
-            $validated['image'] = Storage::url($path);
         }
 
-        $category->update($validated);
+        if ($request->hasFile('image')) {
+            // Delete old image
+            if ($category->image) {
+                $oldImagePath = str_replace(asset('storage/'), '', $category->image);
+                Storage::disk('public')->delete($oldImagePath);
+            }
+            $imagePath = $request->file('image')->store('categories', 'public');
+            $data['image'] = asset('storage/' . $imagePath);
+        }
 
-        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil diperbarui');
+        $category->update($data);
+
+        return redirect()->route('admin.categories.index')
+            ->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    public function toggleStatus(Category $category)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Category $category)
     {
-        $category->update([
-            'is_active' => !$category->is_active
-        ]);
+        try {
+            // Check if category has products
+            $productCount = $category->products()->count();
+            if ($productCount > 0) {
+                if (request()->expectsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => "Kategori tidak dapat dihapus karena masih memiliki {$productCount} produk terkait."
+                    ], 422);
+                }
 
-        $status = $category->is_active ? 'diaktifkan' : 'dinonaktifkan';
-        return back()->with('success', "Kategori berhasil {$status}");
+                return redirect()->route('admin.categories.index')
+                    ->with('error', "Kategori tidak dapat dihapus karena masih memiliki {$productCount} produk terkait.");
+            }
+
+            // Delete image if exists
+            if ($category->image) {
+                $imagePath = str_replace(asset('storage/'), '', $category->image);
+                Storage::disk('public')->delete($imagePath);
+            }
+
+            // Delete category
+            $category->delete();
+
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Kategori berhasil dihapus.'
+                ]);
+            }
+
+            return redirect()->route('admin.categories.index')
+                ->with('success', 'Kategori berhasil dihapus.');
+
+        } catch (\Exception $e) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan saat menghapus kategori.'
+                ], 500);
+            }
+
+            return redirect()->route('admin.categories.index')
+                ->with('error', 'Terjadi kesalahan saat menghapus kategori.');
+        }
+    }
+
+    public function show(Category $category)
+    {
+        $category->loadCount('products');
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'id' => $category->id,
+                'name' => $category->name,
+                'products_count' => $category->products_count
+            ]);
+        }
+
+        return view('admin.categories.show', compact('category'));
     }
 
     public function quickCreate(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string'
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
-        $validated['is_active'] = true;
+        $data = $request->all();
+        $data['is_active'] = true; // Default to active for quick create
 
-        $category = Category::create($validated);
+        // Generate slug from name
+        $data['slug'] = Str::slug($request->name);
+
+        // Ensure slug is unique
+        $originalSlug = $data['slug'];
+        $counter = 1;
+        while (Category::where('slug', $data['slug'])->exists()) {
+            $data['slug'] = $originalSlug . '-' . $counter;
+            $counter++;
+        }
+
+        $category = Category::create($data);
 
         return response()->json([
             'success' => true,
+            'message' => 'Kategori berhasil ditambahkan.',
             'category' => [
                 'id' => $category->id,
-                'name' => $category->name,
-            ],
-            'message' => 'Kategori berhasil ditambahkan'
+                'name' => $category->name
+            ]
         ]);
     }
 }

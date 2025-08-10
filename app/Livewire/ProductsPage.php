@@ -5,6 +5,8 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Products;
 use App\Models\Category;
+use App\Models\Cart;
+use Illuminate\Support\Facades\Auth;
 
 class ProductsPage extends Component
 {
@@ -23,7 +25,8 @@ class ProductsPage extends Component
 
     public function mount()
     {
-        $this->categories = Category::all()->toArray();
+        // Only get active categories
+        $this->categories = Category::where('is_active', true)->get()->toArray();
         $this->loadProducts();
     }
 
@@ -35,6 +38,9 @@ class ProductsPage extends Component
     public function loadProducts()
     {
         $query = Products::with(['images', 'variants']);
+
+        // Only show active products
+        $query->where('is_active', true);
 
         // Apply filters
         if ($this->search) {
@@ -162,6 +168,100 @@ class ProductsPage extends Component
     public function getLastItem()
     {
         return min($this->currentPage * $this->perPage, $this->total);
+    }
+
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->categoryFilter = '';
+        $this->priceRange = '';
+        $this->sortBy = 'newest';
+        $this->currentPage = 1;
+        $this->loadProducts();
+    }
+
+    public function addToCart($productId)
+    {
+        if (!Auth::check()) {
+            session()->flash('error', 'Silakan login terlebih dahulu untuk menambahkan produk ke keranjang.');
+            return redirect()->route('login');
+        }
+
+        $product = Products::with('variants')->find($productId);
+
+        if (!$product || !$product->is_active) {
+            session()->flash('error', 'Produk tidak tersedia.');
+            return;
+        }
+
+        // Check if product has stock
+        $totalStock = $product->variants->sum('stock');
+        if ($totalStock <= 0) {
+            session()->flash('error', 'Stok produk habis.');
+            return;
+        }
+
+        // Get the first available variant (you might want to modify this logic)
+        $variant = $product->variants->where('stock', '>', 0)->first();
+
+        if (!$variant) {
+            session()->flash('error', 'Varian produk tidak tersedia.');
+            return;
+        }
+
+        // Check if item already exists in cart
+        $existingCartItem = Cart::where('user_id', Auth::id())
+            ->where('product_id', $productId)
+            ->where('product_variant_id', $variant->id)
+            ->first();
+
+        if ($existingCartItem) {
+            // Check if adding one more exceeds stock
+            if ($existingCartItem->quantity + 1 > $variant->stock) {
+                session()->flash('error', 'Jumlah melebihi stok yang tersedia.');
+                return;
+            }
+
+            $existingCartItem->quantity += 1;
+            $existingCartItem->save();
+        } else {
+            Cart::create([
+                'user_id' => Auth::id(),
+                'product_id' => $productId,
+                'product_variant_id' => $variant->id,
+                'quantity' => 1,
+            ]);
+        }
+
+        session()->flash('success', 'Produk berhasil ditambahkan ke keranjang!');
+
+        // Emit event to update cart count in navbar
+        $this->dispatch('cartUpdated');
+    }
+
+    public function buyNow($productId)
+    {
+        if (!Auth::check()) {
+            session()->flash('error', 'Silakan login terlebih dahulu untuk melakukan pembelian.');
+            return redirect()->route('login');
+        }
+
+        $product = Products::with('variants')->find($productId);
+
+        if (!$product || !$product->is_active) {
+            session()->flash('error', 'Produk tidak tersedia.');
+            return;
+        }
+
+        // Check if product has stock
+        $totalStock = $product->variants->sum('stock');
+        if ($totalStock <= 0) {
+            session()->flash('error', 'Stok produk habis.');
+            return;
+        }
+
+        // Redirect to product detail page for variant selection
+        return redirect()->route('product.detail', $product->id);
     }
 
     public function render()

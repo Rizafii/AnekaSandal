@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\StoreSettingController;
+use App\Http\Controllers\Api\RajaOngkirController;
 
 // Home Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -61,12 +63,23 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout/payment/{order}/upload', [CheckoutController::class, 'uploadPayment'])->name('checkout.upload.payment');
 });
 
+// Shipping API routes (public for location data)
+Route::prefix('api')->group(function () {
+    Route::get('/rajaongkir/provinces', [RajaOngkirController::class, 'getProvinces'])->name('api.rajaongkir.provinces');
+    Route::get('/rajaongkir/cities/{provinceId}', [RajaOngkirController::class, 'getCities'])->name('api.rajaongkir.cities');
+    Route::get('/rajaongkir/districts/{cityId}', [RajaOngkirController::class, 'getDistricts'])->name('api.rajaongkir.districts');
+    Route::post('/rajaongkir/shipping-cost', [RajaOngkirController::class, 'getShippingCost'])->name('api.rajaongkir.shipping.cost');
+    Route::get('/rajaongkir/city/{cityId}', [RajaOngkirController::class, 'getCity'])->name('api.rajaongkir.city');
+    Route::get('/rajaongkir/province/{provinceId}', [RajaOngkirController::class, 'getProvince'])->name('api.rajaongkir.province');
+    Route::get('/rajaongkir/district/{districtId}', [RajaOngkirController::class, 'getDistrict'])->name('api.rajaongkir.district');
+});
+
 // Admin Routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Admin Category Management
-    Route::resource('categories', AdminCategoryController::class)->except(['destroy']);
+    Route::resource('categories', AdminCategoryController::class);
 
     // Admin Product Management
     Route::resource('products', AdminProductController::class);
@@ -82,4 +95,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::patch('/orders/{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('orders.update-payment-status');
     Route::post('/orders/{order}/shipping-proof', [AdminOrderController::class, 'uploadShippingProof'])->name('orders.upload-shipping-proof');
     Route::patch('/orders/{order}/ship', [AdminOrderController::class, 'ship'])->name('orders.ship');
+
+    // Admin Store Settings
+    Route::get('/store-settings', [StoreSettingController::class, 'index'])->name('store-settings.index');
+    Route::put('/store-settings', [StoreSettingController::class, 'update'])->name('store-settings.update');
+    Route::get('/store-settings/provinces', [StoreSettingController::class, 'getProvinces'])->name('store-settings.provinces');
+    Route::get('/store-settings/cities/{provinceId}', [StoreSettingController::class, 'getCities'])->name('store-settings.cities');
+    Route::get('/store-settings/districts/{cityId}', [StoreSettingController::class, 'getDistricts'])->name('store-settings.districts');
 });

@@ -12,7 +12,7 @@
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
         "Noto Color Emoji";
 
-    /* Primary Color - Blue */
+    /* Primary Color - Green */
     --color-primary: #44624a;
     --color-primary-100: #dbeafe;
     --color-primary-200: #bfdbfe;
@@ -24,8 +24,27 @@
     --color-primary-800: #1e40af;
     --color-primary-900: #1e3a8a;
     --color-primary-950: #172554;
+
+    /* Secondary Color - Light Background */
+    --color-secondary: #f8fafc;
 }
 
 * {
     font-family: "Cabin Sketch", sans-serif;
+}
+
+/* Custom utilities for product cards */
+.grayscale {
+    filter: grayscale(100%);
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.backdrop-blur-sm {
+    backdrop-filter: blur(4px);
 }

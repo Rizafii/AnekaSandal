@@ -18,7 +18,7 @@ class CategoryPage extends Component
 
     public function loadCategories()
     {
-        $query = Category::active();
+        $query = Category::active()->withCount('products');
 
         if ($this->search) {
             $query->where('name', 'like', '%' . $this->search . '%')
@@ -35,7 +35,7 @@ class CategoryPage extends Component
 
     public function selectCategory($categoryId)
     {
-        $this->selectedCategory = Category::find($categoryId);
+        $this->selectedCategory = Category::withCount('products')->find($categoryId);
     }
 
     public function clearSelection()

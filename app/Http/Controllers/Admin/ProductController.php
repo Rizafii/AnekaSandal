@@ -29,23 +29,66 @@ class ProductController extends Controller
     {
         $query = Products::with(['category', 'images', 'variants']);
 
-        // Filter by category
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
-
-        // Search by name
+        // Search filter
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('sku', 'like', '%' . $request->search . '%');
+            });
         }
 
-        // Filter by status
+        // Category filter
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        // Status filter
         if ($request->filled('status')) {
-            $query->where('is_active', $request->status === 'active');
+            $isActive = $request->status === 'active' ? 1 : 0;
+            $query->where('is_active', $isActive);
+        }
+
+        // Stock filter - Calculate based on variants
+        if ($request->filled('stock')) {
+            switch ($request->stock) {
+                case 'in_stock':
+                    $query->whereHas('variants', function ($q) {
+                        $q->selectRaw('product_id, SUM(stock) as total_stock')
+                            ->groupBy('product_id')
+                            ->havingRaw('SUM(stock) > 5');
+                    });
+                    break;
+                case 'low_stock':
+                    $query->whereHas('variants', function ($q) {
+                        $q->selectRaw('product_id, SUM(stock) as total_stock')
+                            ->groupBy('product_id')
+                            ->havingRaw('SUM(stock) BETWEEN 1 AND 5');
+                    });
+                    break;
+                case 'out_of_stock':
+                    $query->where(function ($q) {
+                        $q->whereDoesntHave('variants')
+                            ->orWhereHas('variants', function ($subQ) {
+                                $subQ->selectRaw('product_id, SUM(stock) as total_stock')
+                                    ->groupBy('product_id')
+                                    ->havingRaw('SUM(stock) <= 0');
+                            });
+                    });
+                    break;
+            }
         }
 
         $products = $query->orderBy('created_at', 'desc')->paginate(20);
-        $categories = Category::active()->get();
+
+        // Transform products to include calculated stock from variants
+        $products->getCollection()->transform(function ($product) {
+            // Calculate total stock from active variants
+            $totalStock = $product->variants->where('is_active', true)->sum('stock');
+            $product->calculated_stock = $totalStock;
+            return $product;
+        });
+
+        $categories = Category::active()->orderBy('name')->get();
 
         return view('admin.products.index', compact('products', 'categories'));
     }
@@ -58,52 +101,39 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
+        $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
-            'weight' => 'required|numeric|min:0',
-            'is_active' => 'boolean',
-            'featured' => 'boolean',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'compare_price' => 'nullable|numeric|min:0|gt:price',
+            'stock' => 'required|integer|min:0',
+            'sku' => 'nullable|string|max:255|unique:products,sku',
+            'description' => 'nullable|string',
+            'weight' => 'nullable|numeric|min:0',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_active' => 'required|boolean',
             'variants' => 'nullable|array',
             'variants.*.size' => 'nullable|string|max:50',
             'variants.*.color' => 'nullable|string|max:50',
             'variants.*.additional_price' => 'nullable|numeric|min:0',
             'variants.*.stock' => 'nullable|integer|min:0',
-            'new_category_name' => 'nullable|string|max:255',
-            'new_category_description' => 'nullable|string',
         ]);
 
-        // Handle new category creation
-        if ($request->filled('new_category_name')) {
-            $category = Category::create([
-                'name' => $request->new_category_name,
-                'slug' => Str::slug($request->new_category_name),
-                'description' => $request->new_category_description,
-                'is_active' => true,
-            ]);
-            $validated['category_id'] = $category->id;
+        $data = $request->all();
+
+        // Generate SKU if not provided
+        if (empty($data['sku'])) {
+            $data['sku'] = 'PRD-' . strtoupper(uniqid());
         }
 
-        $validated['slug'] = Str::slug($validated['name']);
-        $validated['is_active'] = $request->has('is_active');
-        $validated['featured'] = $request->has('featured');
+        $product = Products::create($data);
 
-        $product = Products::create($validated);
-
-        // Handle image uploads
+        // Handle multiple images - save with full URL like categories
         if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'public');
-
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image_path' => Storage::url($path),
-                    'alt_text' => $product->name . ' - Image ' . ($index + 1),
-                    'is_primary' => $index === 0,
-                    'sort_order' => $index + 1,
+            foreach ($request->file('images') as $image) {
+                $imagePath = $image->store('products', 'public');
+                $product->images()->create([
+                    'image_path' => asset('storage/' . $imagePath)
                 ]);
             }
         }
@@ -112,8 +142,7 @@ class ProductController extends Controller
         if ($request->filled('variants')) {
             foreach ($request->variants as $variantData) {
                 if (!empty($variantData['size']) || !empty($variantData['color'])) {
-                    ProductVariant::create([
-                        'product_id' => $product->id,
+                    $product->variants()->create([
                         'size' => $variantData['size'] ?? null,
                         'color' => $variantData['color'] ?? null,
                         'additional_price' => $variantData['additional_price'] ?? 0,
@@ -124,7 +153,8 @@ class ProductController extends Controller
             }
         }
 
-        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan');
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Produk berhasil ditambahkan.');
     }
 
     public function show(Products $product)
@@ -142,15 +172,17 @@ class ProductController extends Controller
 
     public function update(Request $request, Products $product)
     {
-        $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
+        $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
-            'weight' => 'required|numeric|min:0',
-            'is_active' => 'boolean',
-            'featured' => 'boolean',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'compare_price' => 'nullable|numeric|min:0|gt:price',
+            'stock' => 'required|integer|min:0',
+            'sku' => 'nullable|string|max:255|unique:products,sku,' . $product->id,
+            'description' => 'nullable|string',
+            'weight' => 'nullable|numeric|min:0',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_active' => 'required|boolean',
             'variants' => 'nullable|array',
             'variants.*.id' => 'nullable|exists:product_variants,id',
             'variants.*.size' => 'nullable|string|max:50',
@@ -158,52 +190,32 @@ class ProductController extends Controller
             'variants.*.additional_price' => 'nullable|numeric|min:0',
             'variants.*.stock' => 'nullable|integer|min:0',
             'variants.*.is_active' => 'boolean',
-            'delete_images' => 'nullable|array',
-            'delete_images.*' => 'exists:product_images,id',
-            'new_category_name' => 'nullable|string|max:255',
-            'new_category_description' => 'nullable|string',
         ]);
 
-        // Handle new category creation
-        if ($request->filled('new_category_name')) {
-            $category = Category::create([
-                'name' => $request->new_category_name,
-                'slug' => Str::slug($request->new_category_name),
-                'description' => $request->new_category_description,
-                'is_active' => true,
-            ]);
-            $validated['category_id'] = $category->id;
-        }
+        $data = $request->all();
 
-        $validated['slug'] = Str::slug($validated['name']);
-        $validated['is_active'] = $request->has('is_active');
-        $validated['featured'] = $request->has('featured');
+        $product->update($data);
 
-        $product->update($validated);
-
-        // Handle image deletions
-        if ($request->filled('delete_images')) {
+        // Handle image deletion
+        if ($request->has('delete_images')) {
             foreach ($request->delete_images as $imageId) {
-                $image = ProductImage::find($imageId);
-                if ($image && $image->product_id === $product->id) {
-                    Storage::disk('public')->delete(str_replace('/storage/', '', $image->image_path));
+                $image = $product->images()->find($imageId);
+                if ($image) {
+                    // Delete physical file
+                    $imagePath = str_replace(asset('storage/'), '', $image->image_path);
+                    Storage::disk('public')->delete($imagePath);
+                    // Delete from database
                     $image->delete();
                 }
             }
         }
 
-        // Handle new image uploads
+        // Handle new images - save with full URL like categories
         if ($request->hasFile('images')) {
-            $existingImagesCount = $product->images()->count();
-            foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'public');
-
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image_path' => Storage::url($path),
-                    'alt_text' => $product->name . ' - Image ' . ($existingImagesCount + $index + 1),
-                    'is_primary' => $product->images()->count() === 0 && $index === 0,
-                    'sort_order' => $existingImagesCount + $index + 1,
+            foreach ($request->file('images') as $image) {
+                $imagePath = $image->store('products', 'public');
+                $product->images()->create([
+                    'image_path' => asset('storage/' . $imagePath)
                 ]);
             }
         }
@@ -216,8 +228,8 @@ class ProductController extends Controller
                 if (!empty($variantData['size']) || !empty($variantData['color'])) {
                     if (!empty($variantData['id'])) {
                         // Update existing variant
-                        $variant = ProductVariant::find($variantData['id']);
-                        if ($variant && $variant->product_id === $product->id) {
+                        $variant = $product->variants()->find($variantData['id']);
+                        if ($variant) {
                             $variant->update([
                                 'size' => $variantData['size'] ?? null,
                                 'color' => $variantData['color'] ?? null,
@@ -229,8 +241,7 @@ class ProductController extends Controller
                         }
                     } else {
                         // Create new variant
-                        $variant = ProductVariant::create([
-                            'product_id' => $product->id,
+                        $variant = $product->variants()->create([
                             'size' => $variantData['size'] ?? null,
                             'color' => $variantData['color'] ?? null,
                             'additional_price' => $variantData['additional_price'] ?? 0,
@@ -246,20 +257,46 @@ class ProductController extends Controller
             $product->variants()->whereNotIn('id', $existingVariantIds)->delete();
         }
 
-        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui');
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Produk berhasil diperbarui.');
     }
 
     public function destroy(Products $product)
     {
-        // Delete associated images
-        foreach ($product->images as $image) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $image->image_path));
+        try {
+            // Delete product images
+            if ($product->images->isNotEmpty()) {
+                foreach ($product->images as $image) {
+                    $imagePath = str_replace(asset('storage/'), '', $image->image_path);
+                    Storage::disk('public')->delete($imagePath);
+                    $image->delete();
+                }
+            }
+
+            // Delete product
+            $product->delete();
+
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Produk berhasil dihapus.'
+                ]);
+            }
+
+            return redirect()->route('admin.products.index')
+                ->with('success', 'Produk berhasil dihapus.');
+
+        } catch (\Exception $e) {
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan saat menghapus produk.'
+                ], 500);
+            }
+
+            return redirect()->route('admin.products.index')
+                ->with('error', 'Terjadi kesalahan saat menghapus produk.');
         }
-
-        // Delete the product (cascade will handle variants and images)
-        $product->delete();
-
-        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus');
     }
 
     public function toggleStatus(Products $product)

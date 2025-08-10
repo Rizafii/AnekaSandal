@@ -88,7 +88,8 @@
                             @endif
                         </div>
                         <h1 class="text-3xl font-bold tracking-tight text-gray-900">
-                            {{ $product['name'] ?? 'Nama Produk' }}</h1>
+                            {{ $product['name'] ?? 'Nama Produk' }}
+                        </h1>
                         <div class="flex flex-wrap items-center gap-4">
                             <div class="flex items-center gap-1 text-amber-500">
                                 @php $rating = $product['rating'] ?? 4.5; @endphp
@@ -153,8 +154,8 @@
                                 @foreach($availableSizes as $sizeData)
                                     <button type="button" wire:click="selectSize('{{ $sizeData['size'] }}')"
                                         class="relative group text-sm font-medium rounded-lg px-3 py-2 border transition focus:outline-none focus:ring-2 focus:ring-primary/40
-                                                    {{ $sizeData['total_stock'] == 0 ? 'cursor-not-allowed opacity-50' : 'hover:border-primary hover:text-primary' }}
-                                                    {{ $selectedSize === $sizeData['size'] ? 'bg-primary text-white border-primary shadow' : 'bg-white border-gray-300 text-gray-700' }}">
+                                                            {{ $sizeData['total_stock'] == 0 ? 'cursor-not-allowed opacity-50' : 'hover:border-primary hover:text-primary' }}
+                                                            {{ $selectedSize === $sizeData['size'] ? 'bg-primary text-white border-primary shadow' : 'bg-white border-gray-300 text-gray-700' }}">
                                         {{ $sizeData['size'] }}
                                         @if($sizeData['total_stock'] == 0)
                                             <span
@@ -170,42 +171,15 @@
                     @if(count($availableColors) > 0)
                         <div class="space-y-3">
                             <h3 class="text-sm font-semibold text-gray-800 uppercase tracking-wide">Warna</h3>
-                            @php
-                                $colorClassMap = [
-                                    'black' => 'bg-black text-white',
-                                    'white' => 'bg-white border border-gray-300',
-                                    'red' => 'bg-red-600',
-                                    'maroon' => 'bg-red-800',
-                                    'blue' => 'bg-blue-600',
-                                    'navy' => 'bg-blue-900',
-                                    'sky' => 'bg-sky-400',
-                                    'green' => 'bg-green-600',
-                                    'olive' => 'bg-green-800',
-                                    'yellow' => 'bg-yellow-400',
-                                    'nude' => 'bg-yellow-200',
-                                    'orange' => 'bg-orange-500',
-                                    'purple' => 'bg-purple-600',
-                                    'pink' => 'bg-pink-500',
-                                    'gray' => 'bg-gray-500',
-                                    'brown' => 'bg-amber-800',
-                                ];
-                            @endphp
-                            <div class="flex flex-wrap gap-3">
+                            <div class="flex flex-wrap gap-2">
                                 @foreach($availableColors as $colorData)
-                                    @php $c = strtolower($colorData['color']);
-                                    $cls = $colorClassMap[$c] ?? 'bg-gradient-to-br from-primary to-primary/70'; @endphp
-                                    <button type="button" wire:click="selectColor('{{ $colorData['color'] }}')" class="relative w-11 h-11 rounded-full flex items-center justify-center ring-offset-2 transition
-                                                    {{ $colorData['available'] ? 'cursor-pointer' : 'cursor-not-allowed opacity-40' }}
-                                                    {{ $selectedColor === $colorData['color'] ? 'ring-2 ring-primary scale-105' : 'hover:scale-105' }}
-                                                    {{ $cls }}">
+                                    <button type="button" wire:click="selectColor('{{ $colorData['color'] }}')"
+                                        class="px-4 py-2 text-sm font-medium rounded-lg border transition focus:outline-none focus:ring-2 focus:ring-primary/40
+                                                        {{ $colorData['available'] ? 'cursor-pointer' : 'cursor-not-allowed opacity-50' }}
+                                                        {{ $selectedColor === $colorData['color'] ? 'bg-primary text-white border-primary shadow' : 'bg-white border-gray-300 text-gray-700 hover:border-primary hover:text-primary' }}">
+                                        {{ $colorData['color'] }}
                                         @if(!$colorData['available'])
-                                            <span class="absolute inset-0 flex items-center justify-center">
-                                                <svg class="w-5 h-5 text-white drop-shadow" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M6 18L18 6M6 6l12 12" />
-                                                </svg>
-                                            </span>
+                                            <span class="text-xs ml-1">(Habis)</span>
                                         @endif
                                     </button>
                                 @endforeach

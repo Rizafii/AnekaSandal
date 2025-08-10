@@ -12,12 +12,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use App\Services\RajaOngkirService;
 
 class CheckoutController extends Controller
 {
-    public function __construct()
+    private $rajaOngkirService;
+
+    public function __construct(RajaOngkirService $rajaOngkirService)
     {
         $this->middleware('auth');
+        $this->rajaOngkirService = $rajaOngkirService;
     }
 
     public function index(Request $request)
@@ -114,8 +118,13 @@ class CheckoutController extends Controller
             'shipping_name' => 'required|string|max:100',
             'shipping_phone' => 'required|string|max:20',
             'shipping_address' => 'required|string|max:500',
-            'shipping_city' => 'required|string|max:100',
             'shipping_postal_code' => 'required|string|max:10',
+            'province_id' => 'required|integer',
+            'city_id' => 'required|integer',
+            'district_id' => 'required|integer',
+            'courier' => 'required|string|in:jne,sicepat,ide,sap,jnt,ninja,tiki,lion,anteraja,pos',
+            'shipping_service' => 'required|string',
+            'shipping_cost' => 'required|numeric|min:0',
         ]);
 
         Log::info('Validation passed', $validated);
@@ -199,15 +208,20 @@ class CheckoutController extends Controller
                 return redirect()->route('home')->with('error', 'Tidak ada item untuk checkout');
             }
 
-            $shippingCost = 10000;
+            $shippingCost = $validated['shipping_cost'];
             $finalAmount = $total + $shippingCost;
 
             Log::info('Creating order with data:', [
                 'user_id' => Auth::id(),
                 'total' => $total,
                 'final_amount' => $finalAmount,
-                'items_count' => $items->count()
+                'items_count' => $items->count(),
+                'shipping_cost' => $shippingCost
             ]);
+
+            // Get city name from Raja Ongkir
+            $cityData = $this->rajaOngkirService->getCity($validated['city_id']);
+            $cityName = $cityData ? $cityData['type'] . ' ' . $cityData['city_name'] : 'Unknown City';
 
             // Create order
             $order = Order::create([
@@ -219,8 +233,13 @@ class CheckoutController extends Controller
                 'shipping_name' => $validated['shipping_name'],
                 'shipping_phone' => $validated['shipping_phone'],
                 'shipping_address' => $validated['shipping_address'],
-                'shipping_city' => $validated['shipping_city'],
+                'shipping_city' => $cityName,
                 'shipping_postal_code' => $validated['shipping_postal_code'],
+                'province_id' => $validated['province_id'],
+                'city_id' => $validated['city_id'],
+                'district_id' => $validated['district_id'],
+                'courier' => $validated['courier'],
+                'shipping_service' => $validated['shipping_service'],
                 'payment_status' => Order::PAYMENT_STATUS_BELUM_BAYAR
             ]);
 
@@ -303,7 +322,11 @@ class CheckoutController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        return view('checkout.payment', compact('order'));
+        // Get payment info from store settings
+        $paymentInfo = \App\Models\StoreSetting::getPaymentInfo();
+        $storePhone = \App\Models\StoreSetting::getStorePhone();
+
+        return view('checkout.payment', compact('order', 'paymentInfo', 'storePhone'));
     }
 
     public function uploadPayment(Request $request, Order $order)

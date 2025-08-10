@@ -3,473 +3,561 @@
 @section('title', 'Tambah Produk')
 
 @section('content')
-    <div class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5">
-        <div class="w-full mb-1">
-            <div class="mb-4">
-                <nav class="flex mb-5">
-                    <ol class="inline-flex items-center space-x-1 text-sm font-medium md:space-x-2">
-                        <li class="inline-flex items-center">
-                            <a href="{{ route('admin.products.index') }}" class="inline-flex items-center text-gray-700 hover:text-primary-600">
-                                Produk
-                            </a>
-                        </li>
-                        <li>
-                            <div class="flex items-center">
-                                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span class="text-gray-400 ml-1 md:ml-2">Tambah Produk</span>
-                            </div>
-                        </li>
-                    </ol>
-                </nav>
-                <h1 class="text-xl sm:text-2xl font-semibold text-gray-900">Tambah Produk Baru</h1>
+    <div class="min-h-screen bg-gray-50/50">
+        <!-- Header -->
+        <div class="bg-white border-b border-gray-200/60 shadow-sm">
+            <div class="px-6 lg:px-8">
+                <div class="flex justify-between items-center py-8">
+                    <div>
+                        <h1 class="text-2xl font-semibold text-gray-900 tracking-tight">Tambah Produk</h1>
+                        <p class="mt-2 text-sm text-gray-600">Buat produk baru untuk toko Anda</p>
+                    </div>
+                    <a href="{{ route('admin.products.index') }}"
+                        class="bg-gray-600 text-white px-5 py-2.5 rounded-xl hover:bg-gray-700 transition-colors duration-200 font-medium text-sm shadow-sm">
+                        <i class="fas fa-arrow-left mr-2"></i>Kembali
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="flex flex-col">
-        <div class="overflow-x-auto">
-            <div class="align-middle inline-block min-w-full">
-                <div class="shadow overflow-hidden">
-                    <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6">
-                        @csrf
-                        
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <!-- Left Column -->
-                            <div class="space-y-6">
-                                <!-- Basic Information -->
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <h3 class="text-lg font-medium text-gray-900 mb-4">Informasi Dasar</h3>
-                                    
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label for="name" class="block text-sm font-medium text-gray-700">Nama Produk</label>
-                                            <input type="text" name="name" id="name" value="{{ old('name') }}" 
-                                                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                                            @error('name')
-                                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                            @enderror
-                                        </div>
+        <div class="px-6 lg:px-8 py-8">
+            <div class="w-full mx-auto">
+                <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
 
-                                        <div>
-                                            <label for="description" class="block text-sm font-medium text-gray-700">Deskripsi</label>
-                                            <textarea name="description" id="description" rows="4" 
-                                                      class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>{{ old('description') }}</textarea>
-                                            @error('description')
-                                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-
-                                        <div class="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label for="price" class="block text-sm font-medium text-gray-700">Harga (Rp)</label>
-                                                <input type="number" name="price" id="price" value="{{ old('price') }}" min="0" step="0.01"
-                                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                                                @error('price')
-                                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-
-                                            <div>
-                                                <label for="weight" class="block text-sm font-medium text-gray-700">Berat (gram)</label>
-                                                <input type="number" name="weight" id="weight" value="{{ old('weight') }}" min="0" step="0.01"
-                                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                                                @error('weight')
-                                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Left Column - Main Information -->
+                        <div class="lg:col-span-2 space-y-8">
+                            <!-- Basic Information -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+                                <div class="px-8 py-6 border-b border-gray-100">
+                                    <h2 class="text-lg font-semibold text-gray-900">Informasi Dasar</h2>
+                                    <p class="text-sm text-gray-600 mt-1">Lengkapi informasi dasar produk</p>
                                 </div>
 
-                                <!-- Category Selection -->
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <h3 class="text-lg font-medium text-gray-900 mb-4">Kategori</h3>
-                                    
-                                    <div class="space-y-4">
-                                        <div>
-                                            <label for="category_id" class="block text-sm font-medium text-gray-700">Pilih Kategori</label>
-                                            <div class="flex gap-2">
-                                                <select name="category_id" id="category_id" 
-                                                        class="flex-1 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                                                    <option value="">Pilih kategori...</option>
-                                                    @foreach($categories as $category)
-                                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                                            {{ $category->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <button type="button" onclick="openCategoryModal()" 
-                                                        class="mt-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap">
-                                                    <i class="fas fa-plus mr-1"></i>Baru
-                                                </button>
-                                            </div>
-                                            @error('category_id')
-                                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-
-                                        <!-- Quick Add Category (Legacy - Hidden) -->
-                                        <div class="border-t pt-4 hidden">
-                                            <div class="flex items-center mb-2">
-                                                <input type="checkbox" id="add_new_category" class="h-4 w-4 text-blue-600 border-gray-300 rounded">
-                                                <label for="add_new_category" class="ml-2 text-sm text-gray-700">Tambah kategori baru</label>
-                                            </div>
-                                            
-                                            <div id="new_category_fields" class="space-y-3 hidden">
-                                                <div>
-                                                    <label for="new_category_name" class="block text-sm font-medium text-gray-700">Nama Kategori Baru</label>
-                                                    <input type="text" name="new_category_name" id="new_category_name" value="{{ old('new_category_name') }}"
-                                                           class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                                                    @error('new_category_name')
-                                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
-                                                <div>
-                                                    <label for="new_category_description" class="block text-sm font-medium text-gray-700">Deskripsi Kategori</label>
-                                                    <textarea name="new_category_description" id="new_category_description" rows="2"
-                                                              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ old('new_category_description') }}</textarea>
-                                                    @error('new_category_description')
-                                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                                    @enderror
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Product Status -->
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <h3 class="text-lg font-medium text-gray-900 mb-4">Status Produk</h3>
-                                    
-                                    <div class="space-y-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" name="is_active" id="is_active" value="1" 
-                                                   {{ old('is_active', true) ? 'checked' : '' }}
-                                                   class="h-4 w-4 text-blue-600 border-gray-300 rounded">
-                                            <label for="is_active" class="ml-2 text-sm text-gray-700">Produk Aktif</label>
-                                        </div>
-
-                                        <div class="flex items-center">
-                                            <input type="checkbox" name="featured" id="featured" value="1" 
-                                                   {{ old('featured') ? 'checked' : '' }}
-                                                   class="h-4 w-4 text-blue-600 border-gray-300 rounded">
-                                            <label for="featured" class="ml-2 text-sm text-gray-700">Produk Unggulan</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Right Column -->
-                            <div class="space-y-6">
-                                <!-- Product Images -->
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <h3 class="text-lg font-medium text-gray-900 mb-4">Gambar Produk</h3>
-                                    
+                                <div class="p-8 space-y-6">
+                                    <!-- Name -->
                                     <div>
-                                        <label for="images" class="block text-sm font-medium text-gray-700">Upload Gambar</label>
-                                        <input type="file" name="images[]" id="images" multiple accept="image/*"
-                                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                                        <p class="mt-1 text-sm text-gray-500">Upload beberapa gambar sekaligus. Gambar pertama akan menjadi gambar utama.</p>
-                                        @error('images.*')
-                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Nama Produk <span class="text-red-500">*</span>
+                                        </label>
+                                        <input type="text" name="name" id="name" value="{{ old('name') }}"
+                                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('name') border-red-300 @enderror"
+                                            placeholder="Masukkan nama produk">
+                                        @error('name')
+                                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Description -->
+                                    <div>
+                                        <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Deskripsi <span class="text-red-500">*</span>
+                                        </label>
+                                        <textarea name="description" id="description" rows="5"
+                                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('description') border-red-300 @enderror"
+                                            placeholder="Masukkan deskripsi lengkap produk">{{ old('description') }}</textarea>
+                                        @error('description')
+                                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
                                     </div>
                                 </div>
+                            </div>
 
-                                <!-- Product Variants -->
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <h3 class="text-lg font-medium text-gray-900 mb-4">Varian Produk</h3>
-                                    
+                            <!-- Pricing & Inventory -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+                                <div class="px-8 py-6 border-b border-gray-100">
+                                    <h2 class="text-lg font-semibold text-gray-900">Harga & Inventori</h2>
+                                    <p class="text-sm text-gray-600 mt-1">Atur harga dan stok produk</p>
+                                </div>
+
+                                <div class="p-8 space-y-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <!-- Price -->
+                                        <div>
+                                            <label for="price" class="block text-sm font-semibold text-gray-700 mb-2">
+                                                Harga <span class="text-red-500">*</span>
+                                            </label>
+                                            <div class="relative">
+                                                <span class="absolute left-3 top-3 text-gray-500">Rp</span>
+                                                <input type="number" name="price" id="price" value="{{ old('price') }}"
+                                                    min="0" step="0.01"
+                                                    class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('price') border-red-300 @enderror"
+                                                    placeholder="0">
+                                            </div>
+                                            @error('price')
+                                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+
+                                        <!-- Compare Price -->
+                                        <div>
+                                            <label for="compare_price"
+                                                class="block text-sm font-semibold text-gray-700 mb-2">
+                                                Harga Coret
+                                            </label>
+                                            <div class="relative">
+                                                <span class="absolute left-3 top-3 text-gray-500">Rp</span>
+                                                <input type="number" name="compare_price" id="compare_price"
+                                                    value="{{ old('compare_price') }}" min="0" step="0.01"
+                                                    class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('compare_price') border-red-300 @enderror"
+                                                    placeholder="0">
+                                            </div>
+                                            @error('compare_price')
+                                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+
+                                        <!-- Stock -->
+                                        <div>
+                                            <label for="stock" class="block text-sm font-semibold text-gray-700 mb-2">
+                                                Stok <span class="text-red-500">*</span>
+                                            </label>
+                                            <input type="number" name="stock" id="stock" value="{{ old('stock') }}" min="0"
+                                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('stock') border-red-300 @enderror"
+                                                placeholder="0">
+                                            @error('stock')
+                                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+
+                                        <!-- Weight -->
+                                        <div>
+                                            <label for="weight" class="block text-sm font-semibold text-gray-700 mb-2">
+                                                Berat (gram)
+                                            </label>
+                                            <input type="number" name="weight" id="weight" value="{{ old('weight') }}"
+                                                min="0" step="0.01"
+                                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('weight') border-red-300 @enderror"
+                                                placeholder="0">
+                                            @error('weight')
+                                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Images -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+                                <div class="px-8 py-6 border-b border-gray-100">
+                                    <h2 class="text-lg font-semibold text-gray-900">Gambar Produk</h2>
+                                    <p class="text-sm text-gray-600 mt-1">Upload gambar produk (maksimal 5 gambar)</p>
+                                </div>
+
+                                <div class="p-8">
+                                    <div
+                                        class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-gray-400 transition-colors">
+                                        <div class="space-y-1 text-center">
+                                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                                                viewBox="0 0 48 48">
+                                                <path
+                                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                            <div class="flex text-sm text-gray-600">
+                                                <label for="images"
+                                                    class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                                    <span>Upload gambar</span>
+                                                    <input id="images" name="images[]" type="file" multiple accept="image/*"
+                                                        class="sr-only" onchange="previewImages(this)">
+                                                </label>
+                                                <p class="pl-1">atau drag and drop</p>
+                                            </div>
+                                            <p class="text-xs text-gray-500">PNG, JPG, GIF hingga 2MB per file</p>
+                                        </div>
+                                    </div>
+                                    <div id="images-preview" class="mt-4 hidden">
+                                        <div id="preview-container"
+                                            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"></div>
+                                    </div>
+                                    @error('images.*')
+                                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- Product Variants -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+                                <div class="px-8 py-6 border-b border-gray-100">
+                                    <h2 class="text-lg font-semibold text-gray-900">Varian Produk</h2>
+                                    <p class="text-sm text-gray-600 mt-1">Tambahkan varian ukuran dan warna</p>
+                                </div>
+
+                                <div class="p-8">
                                     <div id="variants-container">
-                                        <div class="variant-item border border-gray-200 rounded-lg p-4 mb-3">
-                                            <div class="grid grid-cols-2 gap-4 mb-3">
+                                        <div class="variant-item border border-gray-200 rounded-xl p-6 mb-4">
+                                            <div class="flex justify-between items-center mb-4">
+                                                <h4 class="text-md font-semibold text-gray-800">Varian 1</h4>
+                                            </div>
+
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                                 <div>
-                                                    <label class="block text-sm font-medium text-gray-700">Ukuran</label>
-                                                    <input type="text" name="variants[0][size]" placeholder="Contoh: 38, 39, 40" 
-                                                           class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                                    <label
+                                                        class="block text-sm font-semibold text-gray-700 mb-2">Ukuran</label>
+                                                    <input type="text" name="variants[0][size]"
+                                                        placeholder="Contoh: 38, 39, 40"
+                                                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                                 </div>
                                                 <div>
-                                                    <label class="block text-sm font-medium text-gray-700">Warna</label>
-                                                    <input type="text" name="variants[0][color]" placeholder="Contoh: Hitam, Putih" 
-                                                           class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                                    <label
+                                                        class="block text-sm font-semibold text-gray-700 mb-2">Warna</label>
+                                                    <input type="text" name="variants[0][color]"
+                                                        placeholder="Contoh: Hitam, Putih"
+                                                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                                 </div>
                                             </div>
-                                            <div class="grid grid-cols-2 gap-4">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <div>
-                                                    <label class="block text-sm font-medium text-gray-700">Harga Tambahan (Rp)</label>
-                                                    <input type="number" name="variants[0][additional_price]" value="0" min="0" step="0.01"
-                                                           class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Harga
+                                                        Tambahan (Rp)</label>
+                                                    <input type="number" name="variants[0][additional_price]" value="0"
+                                                        min="0" step="0.01"
+                                                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                                 </div>
                                                 <div>
-                                                    <label class="block text-sm font-medium text-gray-700">Stok</label>
+                                                    <label
+                                                        class="block text-sm font-semibold text-gray-700 mb-2">Stok</label>
                                                     <input type="number" name="variants[0][stock]" value="0" min="0"
-                                                           class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <button type="button" id="add-variant" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                        <svg class="-ml-0.5 mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
-                                        </svg>
-                                        Tambah Varian
+                                    <button type="button" id="add-variant"
+                                        class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-medium text-sm">
+                                        <i class="fas fa-plus mr-2"></i>Tambah Varian
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Submit Buttons -->
-                        <div class="mt-6 flex items-center justify-end space-x-3">
-                            <a href="{{ route('admin.products.index') }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                Batal
-                            </a>
-                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                Simpan Produk
-                            </button>
+                        <!-- Right Column - Settings -->
+                        <div class="space-y-8">
+                            <!-- Category -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+                                <div class="px-8 py-6 border-b border-gray-100">
+                                    <h2 class="text-lg font-semibold text-gray-900">Kategori</h2>
+                                    <p class="text-sm text-gray-600 mt-1">Pilih kategori produk</p>
+                                </div>
+
+                                <div class="p-8">
+                                    <div>
+                                        <label for="category_id" class="block text-sm font-semibold text-gray-700 mb-2">
+                                            Kategori <span class="text-red-500">*</span>
+                                        </label>
+                                        <div class="flex gap-2">
+                                            <select name="category_id" id="category_id"
+                                                class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('category_id') border-red-300 @enderror">
+                                                <option value="">Pilih kategori...</option>
+                                                @foreach($categories as $category)
+                                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                                        {{ $category->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <button type="button" onclick="openCategoryModal()"
+                                                class="px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-medium whitespace-nowrap">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        @error('category_id')
+                                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+                                <div class="px-8 py-6 border-b border-gray-100">
+                                    <h2 class="text-lg font-semibold text-gray-900">Status Produk</h2>
+                                    <p class="text-sm text-gray-600 mt-1">Atur visibilitas produk</p>
+                                </div>
+
+                                <div class="p-8">
+                                    <div class="space-y-4">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}
+                                                class="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300">
+                                            <span class="ml-3 text-sm font-medium text-gray-700">Produk Aktif</span>
+                                        </label>
+                                        <p class="text-xs text-gray-500 ml-8">Produk akan terlihat di toko</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Buttons -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+                                <div class="p-8">
+                                    <div class="flex flex-col space-y-3">
+                                        <button type="submit"
+                                            class="w-full px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium shadow-sm">
+                                            <i class="fas fa-save mr-2"></i>Simpan Produk
+                                        </button>
+                                        <a href="{{ route('admin.products.index') }}"
+                                            class="w-full px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium text-center">
+                                            Batal
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
+    <!-- Add Category Modal -->
+    <div id="categoryModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4">
+                <div class="px-6 py-4 border-b border-gray-100">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-900">Tambah Kategori Baru</h3>
+                        <button onclick="closeCategoryModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <form id="categoryForm" class="p-6">
+                    @csrf
+                    <div class="space-y-4">
+                        <div>
+                            <label for="modal_category_name" class="block text-sm font-semibold text-gray-700 mb-2">
+                                Nama Kategori <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="modal_category_name" name="name" required
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Masukkan nama kategori">
+                            <div id="modal_name_error" class="hidden mt-2 text-sm text-red-600"></div>
+                        </div>
+
+                        <div>
+                            <label for="modal_category_description" class="block text-sm font-semibold text-gray-700 mb-2">
+                                Deskripsi
+                            </label>
+                            <textarea id="modal_category_description" name="description" rows="3"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Masukkan deskripsi kategori (opsional)"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" onclick="closeCategoryModal()"
+                            class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium">
+                            Batal
+                        </button>
+                        <button type="submit"
+                            class="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium">
+                            <span id="modal_submit_text">Simpan Kategori</span>
+                            <span id="modal_loading" class="hidden">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Toggle new category fields
-            const addCategoryCheckbox = document.getElementById('add_new_category');
-            const newCategoryFields = document.getElementById('new_category_fields');
-            const categorySelect = document.getElementById('category_id');
-
-            addCategoryCheckbox.addEventListener('change', function() {
-                if (this.checked) {
-                    newCategoryFields.classList.remove('hidden');
-                    categorySelect.disabled = true;
-                    categorySelect.value = '';
-                } else {
-                    newCategoryFields.classList.add('hidden');
-                    categorySelect.disabled = false;
-                }
+        // Show flash messages with SweetAlert
+        @if(session('success'))
+            Swal.fire({
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                icon: 'success',
+                confirmButtonColor: '#10b981',
+                timer: 3000,
+                timerProgressBar: true
             });
+        @endif
 
-            // Add variant functionality
-            let variantIndex = 1;
-            const addVariantBtn = document.getElementById('add-variant');
-            const variantsContainer = document.getElementById('variants-container');
+        @if(session('error'))
+            Swal.fire({
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                icon: 'error',
+                confirmButtonColor: '#ef4444'
+            });
+        @endif
 
-            addVariantBtn.addEventListener('click', function() {
-                const variantHtml = `
-                    <div class="variant-item border border-gray-200 rounded-lg p-4 mb-3">
-                        <div class="flex justify-between items-start mb-3">
-                            <h4 class="text-sm font-medium text-gray-700">Varian ${variantIndex + 1}</h4>
-                            <button type="button" class="remove-variant text-red-600 hover:text-red-800">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                </svg>
+            // Preview multiple images
+            function previewImages(input) {
+                const previewContainer = document.getElementById('preview-container');
+                const previewSection = document.getElementById('images-preview');
+
+                previewContainer.innerHTML = '';
+
+                if (input.files && input.files.length > 0) {
+                    previewSection.classList.remove('hidden');
+
+                    Array.from(input.files).forEach((file, index) => {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const div = document.createElement('div');
+                            div.className = 'relative group';
+                            div.innerHTML = `
+                                            <div class="aspect-square bg-gray-100 rounded-xl overflow-hidden">
+                                                <img src="${e.target.result}" alt="Preview ${index + 1}" class="w-full h-full object-cover">
+                                            </div>
+                                            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button type="button" onclick="removePreview(this)" class="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600">
+                                                    ×
+                                                </button>
+                                            </div>
+                                            ${index === 0 ? '<div class="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">Utama</div>' : ''}
+                                        `;
+                            previewContainer.appendChild(div);
+                        }
+                        reader.readAsDataURL(file);
+                    });
+                } else {
+                    previewSection.classList.add('hidden');
+                }
+            }
+
+        function removePreview(button) {
+            button.closest('.relative').remove();
+            // Here you could also update the file input to remove the corresponding file
+        }
+
+        // Category Modal Functions
+        function openCategoryModal() {
+            document.getElementById('categoryModal').classList.remove('hidden');
+            document.getElementById('modal_category_name').focus();
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.add('hidden');
+            document.getElementById('categoryForm').reset();
+            document.getElementById('modal_name_error').classList.add('hidden');
+        }
+
+        // Handle category form submission
+        document.getElementById('categoryForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const submitBtn = document.querySelector('#categoryForm button[type="submit"]');
+            const submitText = document.getElementById('modal_submit_text');
+            const loadingText = document.getElementById('modal_loading');
+            const errorDiv = document.getElementById('modal_name_error');
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitText.classList.add('hidden');
+            loadingText.classList.remove('hidden');
+            errorDiv.classList.add('hidden');
+
+            const formData = new FormData(this);
+
+            fetch('{{ route("admin.categories.quick-create") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Add new category to select dropdown
+                        const categorySelect = document.getElementById('category_id');
+                        const newOption = document.createElement('option');
+                        newOption.value = data.category.id;
+                        newOption.textContent = data.category.name;
+                        newOption.selected = true;
+                        categorySelect.appendChild(newOption);
+
+                        // Close modal and show success message
+                        closeCategoryModal();
+
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonColor: '#10b981',
+                            timer: 2000,
+                            timerProgressBar: true
+                        });
+                    } else {
+                        throw new Error(data.message || 'Terjadi kesalahan');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    errorDiv.textContent = 'Terjadi kesalahan saat menambah kategori';
+                    errorDiv.classList.remove('hidden');
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitBtn.disabled = false;
+                    submitText.classList.remove('hidden');
+                    loadingText.classList.add('hidden');
+                });
+        });
+
+        // Close modal on outside click
+        document.getElementById('categoryModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeCategoryModal();
+            }
+        });
+
+        // Add variant functionality
+        let variantIndex = 1;
+        document.getElementById('add-variant').addEventListener('click', function () {
+            const container = document.getElementById('variants-container');
+            const variantHtml = `
+                    <div class="variant-item border border-gray-200 rounded-xl p-6 mb-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-md font-semibold text-gray-800">Varian ${variantIndex + 1}</h4>
+                            <button type="button" onclick="removeVariant(this)" class="text-red-600 hover:text-red-800 p-2">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </div>
-                        <div class="grid grid-cols-2 gap-4 mb-3">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Ukuran</label>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Ukuran</label>
                                 <input type="text" name="variants[${variantIndex}][size]" placeholder="Contoh: 38, 39, 40" 
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Warna</label>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Warna</label>
                                 <input type="text" name="variants[${variantIndex}][color]" placeholder="Contoh: Hitam, Putih" 
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Harga Tambahan (Rp)</label>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Harga Tambahan (Rp)</label>
                                 <input type="number" name="variants[${variantIndex}][additional_price]" value="0" min="0" step="0.01"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Stok</label>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Stok</label>
                                 <input type="number" name="variants[${variantIndex}][stock]" value="0" min="0"
-                                       class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             </div>
                         </div>
                     </div>
                 `;
-                
-                variantsContainer.insertAdjacentHTML('beforeend', variantHtml);
-                variantIndex++;
-            });
 
-            // Remove variant functionality
-            variantsContainer.addEventListener('click', function(e) {
-                if (e.target.closest('.remove-variant')) {
-                    e.target.closest('.variant-item').remove();
-                }
-            });
+            container.insertAdjacentHTML('beforeend', variantHtml);
+            variantIndex++;
         });
+
+        function removeVariant(button) {
+            button.closest('.variant-item').remove();
+        }
     </script>
-</div>
-
-<!-- Add Category Modal -->
-<div id="categoryModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
-    <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-medium text-gray-900">Tambah Kategori Baru</h3>
-                <button onclick="closeCategoryModal()" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <form id="categoryForm">
-                @csrf
-                <div class="space-y-4">
-                    <div>
-                        <label for="modal_category_name" class="block text-sm font-medium text-gray-700 mb-2">
-                            Nama Kategori <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" id="modal_category_name" name="name" required
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                               placeholder="Masukkan nama kategori">
-                        <div id="modal_name_error" class="hidden mt-1 text-sm text-red-600"></div>
-                    </div>
-                    
-                    <div>
-                        <label for="modal_category_description" class="block text-sm font-medium text-gray-700 mb-2">
-                            Deskripsi
-                        </label>
-                        <textarea id="modal_category_description" name="description" rows="3"
-                                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                  placeholder="Masukkan deskripsi kategori (opsional)"></textarea>
-                    </div>
-                </div>
-                
-                <div class="flex justify-end space-x-3 mt-6">
-                    <button type="button" onclick="closeCategoryModal()" 
-                            class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-md text-sm font-medium">
-                        Batal
-                    </button>
-                    <button type="submit" 
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-                        <span id="modal_submit_text">Simpan Kategori</span>
-                        <span id="modal_loading" class="hidden">
-                            <i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...
-                        </span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
-// Category Modal Functions
-function openCategoryModal() {
-    document.getElementById('categoryModal').classList.remove('hidden');
-    document.getElementById('modal_category_name').focus();
-}
-
-function closeCategoryModal() {
-    document.getElementById('categoryModal').classList.add('hidden');
-    document.getElementById('categoryForm').reset();
-    document.getElementById('modal_name_error').classList.add('hidden');
-}
-
-// Handle category form submission
-document.getElementById('categoryForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const submitBtn = document.querySelector('#categoryForm button[type="submit"]');
-    const submitText = document.getElementById('modal_submit_text');
-    const loadingText = document.getElementById('modal_loading');
-    const errorDiv = document.getElementById('modal_name_error');
-    
-    // Show loading state
-    submitBtn.disabled = true;
-    submitText.classList.add('hidden');
-    loadingText.classList.remove('hidden');
-    errorDiv.classList.add('hidden');
-    
-    const formData = new FormData(this);
-    
-    fetch('{{ route("admin.categories.quick-create") }}', {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Accept': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Add new category to select dropdown
-            const categorySelect = document.getElementById('category_id');
-            const newOption = document.createElement('option');
-            newOption.value = data.category.id;
-            newOption.textContent = data.category.name;
-            newOption.selected = true;
-            categorySelect.appendChild(newOption);
-            
-            // Close modal and show success message
-            closeCategoryModal();
-            
-            // Show success notification
-            showNotification('success', data.message);
-        } else {
-            throw new Error(data.message || 'Terjadi kesalahan');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        if (error.message.includes('already been taken')) {
-            errorDiv.textContent = 'Nama kategori sudah digunakan';
-            errorDiv.classList.remove('hidden');
-        } else {
-            showNotification('error', 'Terjadi kesalahan saat menambah kategori');
-        }
-    })
-    .finally(() => {
-        // Reset button state
-        submitBtn.disabled = false;
-        submitText.classList.remove('hidden');
-        loadingText.classList.add('hidden');
-    });
-});
-
-// Simple notification function
-function showNotification(type, message) {
-    const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-md shadow-lg ${
-        type === 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'
-    }`;
-    notification.innerHTML = `
-        <div class="flex items-center">
-            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} mr-2"></i>
-            <span>${message}</span>
-            <button onclick="this.parentElement.parentElement.remove()" class="ml-3 text-gray-400 hover:text-gray-600">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-        if (notification.parentElement) {
-            notification.remove();
-        }
-    }, 5000);
-}
-
-// Close modal on outside click
-document.getElementById('categoryModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeCategoryModal();
-    }
-});
-</script>
-
-@endsection
+@endpush

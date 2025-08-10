@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'rajaongkir' => [
+        'key' => env('RAJAONGKIR_API_KEY'),
+        'url' => env('RAJAONGKIR_URL', 'https://api.rajaongkir.com/starter'),
+    ],
+
 ];

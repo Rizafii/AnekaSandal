@@ -13,7 +13,7 @@
                 Temukan sandal berkualitas tinggi yang dirancang untuk kenyamanan dan gaya anda.
             </p>
             <div class="cta">
-                <a href="#"
+                <a href="{{route('products')}}"
                     class="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary">
                     Beli Sekarang
                     <svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20"
@@ -23,7 +23,7 @@
                             clip-rule="evenodd"></path>
                     </svg>
                 </a>
-                <a href="#"
+                <a href="https://wa.me/6288226532872"
                     class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-primary rounded-lg bg-white">
                     Hubungi Kami
                 </a>

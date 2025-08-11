@@ -45,6 +45,11 @@ Route::middleware('auth')->group(function () {
     Route::put('/cart/{cart}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('cart.destroy');
     Route::post('/buy-now', [CartController::class, 'buyNow'])->name('buy.now');
+
+    // Profile Route
+    Route::get('/profile', function () {
+        return view('profile');
+    })->name('profile');
 });
 
 // Order routes
@@ -105,7 +110,4 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // Admin Store Settings
     Route::get('/store-settings', [StoreSettingController::class, 'index'])->name('store-settings.index');
     Route::put('/store-settings', [StoreSettingController::class, 'update'])->name('store-settings.update');
-    Route::get('/store-settings/provinces', [StoreSettingController::class, 'getProvinces'])->name('store-settings.provinces');
-    Route::get('/store-settings/cities/{provinceId}', [StoreSettingController::class, 'getCities'])->name('store-settings.cities');
-    Route::get('/store-settings/districts/{cityId}', [StoreSettingController::class, 'getDistricts'])->name('store-settings.districts');
 });

@@ -30,6 +30,8 @@ class Order extends Model
         'shipping_image',
         'shipped_at',
         'delivered_at',
+        'delivery_proof',
+        'received_at',
         'notes'
     ];
 
@@ -38,7 +40,8 @@ class Order extends Model
         'shipping_cost' => 'decimal:2',
         'final_amount' => 'decimal:2',
         'shipped_at' => 'datetime',
-        'delivered_at' => 'datetime'
+        'delivered_at' => 'datetime',
+        'received_at' => 'datetime'
     ];
 
     // Status constants

@@ -27,6 +27,12 @@ class ProductsPage extends Component
     {
         // Only get active categories
         $this->categories = Category::where('is_active', true)->get()->toArray();
+
+        // Check for category parameter from URL
+        if (request()->has('category') && request()->get('category')) {
+            $this->categoryFilter = request()->get('category');
+        }
+
         $this->loadProducts();
     }
 
@@ -176,6 +182,13 @@ class ProductsPage extends Component
         $this->categoryFilter = '';
         $this->priceRange = '';
         $this->sortBy = 'newest';
+        $this->currentPage = 1;
+        $this->loadProducts();
+    }
+
+    public function setCategoryFilter($categoryId)
+    {
+        $this->categoryFilter = $categoryId;
         $this->currentPage = 1;
         $this->loadProducts();
     }

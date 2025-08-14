@@ -1,7 +1,7 @@
 <div>
     @if($order->status === 'sedang_dikirim' && $order->shipped_at)
         <button wire:click="openModal"
-            class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-purple-700">
+            class="bg-green-600 text-white px-4 py-3 rounded-lg text-sm font-medium hover:bg-green-700">
             Konfirmasi Terima
         </button>
 
@@ -20,12 +20,12 @@
 
                         <div class="mb-4">
                             <label for="deliveryProof" class="block text-sm font-medium text-gray-700 mb-2 text-left">
-                                Upload Foto Bukti Penerimaan
+                                Upload Foto Bukti Penerimaan (Opsional)
                             </label>
                             <input type="file" wire:model="deliveryProof" id="deliveryProof" accept="image/*"
                                 class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50">
                             <p class="text-xs text-gray-500 mt-1 text-left">
-                                Upload foto Anda dengan barang yang diterima
+                                Upload foto Anda dengan barang yang diterima (Opsional)
                             </p>
                             @error('deliveryProof')
                                 <span class="text-red-500 text-xs">{{ $message }}</span>

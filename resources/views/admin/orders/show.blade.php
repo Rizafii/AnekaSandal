@@ -210,6 +210,19 @@
                                 </div>
                             @endif
 
+                            @if($order->delivery_proof)
+                                <div class="mt-6">
+                                    <label class="block text-sm font-medium text-gray-500 mb-3">Bukti Penerimaan
+                                        Customer</label>
+                                    <img src="{{ asset('storage/' . $order->delivery_proof) }}" alt="Bukti penerimaan"
+                                        class="h-48 w-auto rounded-xl shadow-sm border border-gray-200">
+                                    @if($order->received_at)
+                                        <p class="text-xs text-gray-500 mt-2">Diterima pada:
+                                            {{ $order->received_at->format('d M Y H:i') }}</p>
+                                    @endif
+                                </div>
+                            @endif
+
                             @if($order->notes)
                                 <div class="mt-6">
                                     <label class="block text-sm font-medium text-gray-500 mb-1">Catatan Pengiriman</label>

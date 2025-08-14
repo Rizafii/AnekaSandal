@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Cart;
 use App\Policies\OrderPolicy;
 use App\Policies\CartPolicy;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +17,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
     }
 
     /**

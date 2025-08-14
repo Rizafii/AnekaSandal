@@ -14,17 +14,17 @@
                         class="text-sm w-fit z-10 mt-9 relative items-center text-center border border-secondary group-hover:border-transparent py-3 px-5 rounded-full font-semibold text-white transition-all duration-400 ease-in-out group-hover:-translate-y-4">
                         {{ $category['name'] }}
                     </h3>
-                    <a href="{{ route('category.products', $category['slug']) }}"
+                    <a href="{{ route('products') }}?category={{ $category['id'] }}"
                         class="text-sm mt-4 opacity-0 group-hover:opacity-100 flex w-fit z-10 relative items-center text-center py-3 px-5 rounded-full font-semibold text-white transition-all duration-400 ease-in-out group-hover:-translate-y-4 group-hover:border border-white">Show
                         More</a>
                 </div>
             @endforeach
             <div
                 class="category-item flex shadow-lg hover:shadow-2xl flex-col bg-primary  hover:rounded-[140px] justify-center transition-all duration-400 ease-in-out items-center bg-cover bg-center bg-no-repeat rounded-2xl p-4 min-h-[400px] border-2 border-transparent hover:border-secondary">
-                <h3
+                <a href={{route('categories')}}
                     class="text-sm w-fit items-center text-center border border-secondary py-3 px-5 rounded-full font-semibold text-white">
                     Semua Kategori >
-                </h3>
+                </a>
             </div>
         </div>
     </div>

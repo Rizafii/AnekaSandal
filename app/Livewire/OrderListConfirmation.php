@@ -34,7 +34,7 @@ class OrderListConfirmation extends Component
     public function confirmReceived()
     {
         $this->validate([
-            'deliveryProof' => 'required|image|max:2048',
+            'deliveryProof' => 'nullable|image|max:2048',
         ]);
 
         if ($this->order->user_id !== Auth::id()) {
@@ -47,8 +47,12 @@ class OrderListConfirmation extends Component
             return;
         }
 
-        // Store the delivery proof image
-        $deliveryProofPath = $this->deliveryProof->store('delivery-proofs', 'public');
+        $deliveryProofPath = null;
+
+        // Store the delivery proof image if uploaded
+        if ($this->deliveryProof) {
+            $deliveryProofPath = $this->deliveryProof->store('delivery-proofs', 'public');
+        }
 
         $this->order->update([
             'status' => 'selesai',

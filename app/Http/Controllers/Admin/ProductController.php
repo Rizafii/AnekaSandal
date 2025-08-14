@@ -290,7 +290,7 @@ class ProductController extends Controller
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Terjadi kesalahan saat menghapus produk.'
+                    'message' => 'Produk ini ada dalam order user'
                 ], 500);
             }
 

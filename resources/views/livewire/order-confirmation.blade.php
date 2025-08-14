@@ -20,13 +20,12 @@
 
                         <div class="mb-4">
                             <label for="deliveryProof" class="block text-sm font-medium text-gray-700 mb-2 text-left">
-                                Upload Foto Bukti Penerimaan
+                                Upload Foto Bukti Penerimaan (Opsional)
                             </label>
                             <input type="file" wire:model="deliveryProof" id="deliveryProof" accept="image/*"
                                 class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none">
                             <p class="text-xs text-gray-500 mt-1 text-left">
-                                Upload foto Anda dengan barang yang diterima sebagai bukti bahwa pesanan telah diterima dengan
-                                baik
+                                Upload foto Anda dengan barang yang diterima (Opsional)
                             </p>
                             @error('deliveryProof')
                                 <span class="text-red-500 text-xs">{{ $message }}</span>

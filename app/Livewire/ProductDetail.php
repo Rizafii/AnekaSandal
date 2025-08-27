@@ -38,7 +38,7 @@ class ProductDetail extends Component
                 return [
                     'id' => $testimonial->id,
                     'user' => [
-                        'name' => $testimonial->user->name ?? 'User'
+                        'name' => $testimonial->user->full_name ?? 'User'
                     ],
                     'rating' => $testimonial->rating,
                     'review' => $testimonial->review,

@@ -175,6 +175,52 @@
                                     class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-semibold {{ $statusConfig['class'] }}">
                                     {{ $statusConfig['text'] }}
                                 </span>
+
+                                @if($order->status === 'sedang_dikirim' && $order->tracking_number && $order->courier)
+                                    <!-- Tracking Summary -->\n <div id="trackingSummary" class="mt-4 hidden">
+                                        <div class="bg-white rounded-lg p-3 border border-primary/20">
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
+                                                    </path>
+                                                </svg>
+                                                <span class="text-xs font-semibold text-gray-700">Status Pengiriman:</span>
+                                            </div>
+                                            <p class="text-sm font-semibold text-gray-900" id="summaryStatus">Memuat data...</p>
+                                            <p class="text-xs text-gray-600 mt-1" id="summaryDate">-</p>
+                                            <button onclick="openTrackingModal()"
+                                                class="mt-3 w-full bg-primary/10 hover:bg-primary/20 text-primary font-medium py-2 px-3 rounded-lg text-xs transition-colors">
+                                                <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                                    </path>
+                                                </svg>
+                                                Lihat Selengkapnya
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Loading State -->
+                                    <div id="trackingSummaryLoading" class="mt-4">
+                                        <div class="bg-white rounded-lg p-3 border border-gray-200">
+                                            <div class="flex items-center gap-2">
+                                                <svg class="animate-spin h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                        stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor"
+                                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                    </path>
+                                                </svg>
+                                                <span class="text-xs text-gray-600">Memuat status pengiriman...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
 
                             <!-- Order Details -->
@@ -182,7 +228,8 @@
                                 <div class="flex flex-col gap-1">
                                     <label class="text-sm font-semibold text-gray-700">Nomor Pesanan:</label>
                                     <p class="text-gray-900 font-mono bg-gray-50 px-3 py-2 rounded-lg border">
-                                        {{ $order->order_number }}</p>
+                                        {{ $order->order_number }}
+                                    </p>
                                 </div>
                                 <div class="flex flex-col gap-1">
                                     <label class="text-sm font-semibold text-gray-700">Tanggal Pesanan:</label>
@@ -199,7 +246,8 @@
                                     <div class="flex flex-col gap-1">
                                         <label class="text-sm font-semibold text-gray-700">Catatan:</label>
                                         <p class="text-gray-900 bg-gray-50 px-3 py-2 rounded-lg border italic">
-                                            {{ $order->notes }}</p>
+                                            {{ $order->notes }}
+                                        </p>
                                     </div>
                                 @endif
                             </div>
@@ -229,12 +277,25 @@
                                         <label class="text-sm font-semibold text-gray-700">Alamat:</label>
                                         <p
                                             class="text-gray-900 bg-gray-50 px-3 py-2 rounded-lg border text-sm leading-relaxed">
-                                            {{ $order->shipping_address }}</p>
+                                            {{ $order->shipping_address }}
+                                        </p>
                                     </div>
                                     @if($order->shipping_postal_code)
                                         <div class="flex flex-col gap-1">
                                             <label class="text-sm font-semibold text-gray-700">Kode Pos:</label>
                                             <p class="text-gray-900 font-mono">{{ $order->shipping_postal_code }}</p>
+                                        </div>
+                                    @endif
+                                    @if($order->courier)
+                                        <div class="flex flex-col gap-1">
+                                            <label class="text-sm font-semibold text-gray-700">Kurir:</label>
+                                            <p class="text-gray-900">{{ strtoupper($order->courier) }}</p>
+                                        </div>
+                                    @endif
+                                    @if($order->tracking_number)
+                                        <div class="flex flex-col gap-1">
+                                            <label class="text-sm font-semibold text-gray-700">Nomor Resi:</label>
+                                            <p class="text-gray-900 font-mono">{{ $order->tracking_number }}</p>
                                         </div>
                                     @endif
                                 </div>
@@ -363,6 +424,72 @@
             </div>
         </div>
     </div>
+
+    <!-- Tracking Modal -->
+    @if($order->status === 'sedang_dikirim' && $order->tracking_number && $order->courier)
+        <div id="trackingModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+            <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-2xl bg-white">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between mb-4 pb-4 border-b">
+                    <h3 class="text-xl font-bold text-gray-900">Detail Tracking Pengiriman</h3>
+                    <button onclick="closeTrackingModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="max-h-[70vh] overflow-y-auto">
+                    <!-- Tracking Info -->
+                    <div id="modalTrackingInfo">
+                        <div class="bg-gray-50 rounded-xl p-4 mb-4">
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <span class="text-gray-600">No. Resi:</span>
+                                    <span class="font-semibold text-gray-900 block"
+                                        id="modalTrackingWaybill">{{ $order->tracking_number }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-600">Kurir:</span>
+                                    <span class="font-semibold text-gray-900 block"
+                                        id="modalTrackingCourier">{{ strtoupper($order->courier) }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div id="modalTrackingStatus" class="bg-primary/10 border border-primary/20 rounded-xl p-4 mb-4">
+                            <div class="flex items-center">
+                                <svg class="w-6 h-6 text-primary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                <div>
+                                    <h4 class="font-semibold text-gray-900" id="modalStatusDescription">-</h4>
+                                    <p class="text-sm text-gray-600" id="modalStatusLocation">-</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- History Timeline -->
+                        <div>
+                            <h4 class="font-semibold text-gray-900 mb-3">Riwayat Pengiriman</h4>
+                            <div id="modalTrackingHistory" class="space-y-3">
+                                <!-- Will be filled by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- API Source -->
+                        <div class="mt-4 text-xs text-gray-500 text-right">
+                            Data dari: <span id="modalApiSource" class="font-medium">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
     </div>
 
 @endsection
@@ -430,5 +557,171 @@
                 });
             });
         });
+
+        // Tracking functionality
+        const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
+        const orderId = {{ $order->id }};
+        const trackingNumber = '{{ $order->tracking_number ?? '' }}';
+        const courier = '{{ $order->courier ?? '' }}';
+        let trackingData = null;
+
+        function getCacheKey() {
+            return `tracking_${orderId}_${courier}_${trackingNumber}`;
+        }
+
+        function openTrackingModal() {
+            document.getElementById('trackingModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTrackingModal() {
+            document.getElementById('trackingModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function getCachedData() {
+            try {
+                const cacheKey = getCacheKey();
+                const cached = localStorage.getItem(cacheKey);
+
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    const now = new Date().getTime();
+
+                    // Check if cache is still valid
+                    if (now - data.timestamp < CACHE_DURATION) {
+                        console.log('Using cached tracking data');
+                        return data.result;
+                    } else {
+                        // Clear expired cache
+                        localStorage.removeItem(cacheKey);
+                    }
+                }
+            } catch (e) {
+                console.error('Error reading cache:', e);
+            }
+            return null;
+        }
+
+        function setCachedData(result) {
+            try {
+                const cacheKey = getCacheKey();
+                const data = {
+                    timestamp: new Date().getTime(),
+                    result: result
+                };
+                localStorage.setItem(cacheKey, JSON.stringify(data));
+                console.log('Tracking data cached');
+            } catch (e) {
+                console.error('Error saving cache:', e);
+            }
+        }
+
+        function displayTrackingData(result) {
+            if (!result.success) {
+                // Hide loading, keep summary hidden
+                const loadingEl = document.getElementById('trackingSummaryLoading');
+                if (loadingEl) loadingEl.classList.add('hidden');
+                return;
+            }
+
+            trackingData = result;
+            const data = result.data;
+
+            // Update summary in status section
+            const summaryEl = document.getElementById('trackingSummary');
+            const loadingEl = document.getElementById('trackingSummaryLoading');
+            const summaryStatusEl = document.getElementById('summaryStatus');
+            const summaryDateEl = document.getElementById('summaryDate');
+
+            if (summaryEl && summaryStatusEl && summaryDateEl) {
+                summaryStatusEl.textContent = data.status.description || 'Dalam proses pengiriman';
+                if (data.history && data.history.length > 0) {
+                    const latestHistory = data.history[0];
+                    summaryDateEl.textContent = `${latestHistory.date || '-'} ${latestHistory.time || ''}`;
+                }
+                loadingEl.classList.add('hidden');
+                summaryEl.classList.remove('hidden');
+            }
+
+            // Update modal content
+            document.getElementById('modalTrackingWaybill').textContent = data.waybill || trackingNumber;
+            document.getElementById('modalTrackingCourier').textContent = data.courier || courier.toUpperCase();
+            document.getElementById('modalStatusDescription').textContent = data.status.description || 'Dalam proses pengiriman';
+            document.getElementById('modalStatusLocation').textContent = data.status.code || '-';
+
+            // Update history in modal
+            const historyContainer = document.getElementById('modalTrackingHistory');
+            historyContainer.innerHTML = '';
+
+            if (data.history && data.history.length > 0) {
+                data.history.forEach((item, index) => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'flex gap-3';
+
+                    historyItem.innerHTML = `
+                            <div class="flex-shrink-0 w-2 h-2 rounded-full ${index === 0 ? 'bg-primary' : 'bg-gray-300'} mt-2"></div>
+                            <div class="flex-1 pb-3 ${index !== data.history.length - 1 ? 'border-l-2 border-gray-200 pl-3 ml-1' : 'pl-3 ml-1'}">
+                                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                                    <div class="flex items-start justify-between mb-1">
+                                        <span class="text-xs font-semibold text-gray-500">${item.date || '-'} ${item.time || ''}</span>
+                                        ${item.location ? `<span class="text-xs text-gray-500">${item.location}</span>` : ''}
+                                    </div>
+                                    <p class="text-sm text-gray-900">${item.description || '-'}</p>
+                                </div>
+                            </div>
+                        `;
+
+                    historyContainer.appendChild(historyItem);
+                });
+            } else {
+                historyContainer.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">Tidak ada riwayat pengiriman</p>';
+            }
+
+            // Update API source
+            document.getElementById('modalApiSource').textContent = result.source === 'rajaongkir' ? 'RajaOngkir' : 'BinderByte';
+        }
+
+        async function loadTracking() {
+            // Check if tracking info is available
+            if (!trackingNumber || !courier) {
+                console.log('No tracking info available');
+                return;
+            }
+
+            // Check cache first
+            const cached = getCachedData();
+            if (cached) {
+                displayTrackingData(cached);
+                return;
+            }
+
+            // Fetch from API
+            try {
+                const response = await fetch(`{{ route('orders.track', $order->id) }}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    // Cache the result
+                    setCachedData(result);
+                    displayTrackingData(result);
+                } else {
+                    console.error('Tracking failed:', result.message);
+                    const loadingEl = document.getElementById('trackingSummaryLoading');
+                    if (loadingEl) loadingEl.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error fetching tracking data:', error);
+                const loadingEl = document.getElementById('trackingSummaryLoading');
+                if (loadingEl) loadingEl.classList.add('hidden');
+            }
+        }
+
+        // Auto-load tracking when page loads if status is sedang_dikirim
+        @if($order->status === 'sedang_dikirim' && $order->tracking_number && $order->courier)
+            document.addEventListener('DOMContentLoaded', function () {
+                loadTracking();
+            });
+        @endif
     </script>
 @endpush

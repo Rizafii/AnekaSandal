@@ -36,8 +36,13 @@ return [
     ],
 
     'rajaongkir' => [
-        'key' => env('RAJAONGKIR_API_KEY'),
-        'url' => env('RAJAONGKIR_URL', 'https://api.rajaongkir.com/starter'),
+        'api_key' => env('RAJAONGKIR_API_KEY'),
+        'url' => env('RAJAONGKIR_URL', 'https://rajaongkir.komerce.id/api/v1'),
+    ],
+
+    'binderbyte' => [
+        'api_key' => env('BINDERBYTE_API_KEY'),
+        'url' => env('BINDERBYTE_URL', 'https://api.binderbyte.com/v1/track'),
     ],
 
 ];

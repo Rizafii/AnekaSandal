@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Services\TrackingService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -111,6 +112,43 @@ class OrderController extends Controller
 
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Track shipment via API
+     */
+    public function trackShipment(Request $request, $id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+
+            // Check if user owns this order
+            if ($order->user_id !== Auth::id()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
+
+            if (!$order->tracking_number || !$order->courier) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nomor resi atau kurir tidak tersedia'
+                ], 400);
+            }
+
+            $trackingService = new TrackingService();
+            $result = $trackingService->track($order->courier, $order->tracking_number);
+
+            return response()->json($result);
+
+        } catch (\Exception $e) {
+            \Log::error('Error tracking shipment: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

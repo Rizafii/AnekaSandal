@@ -316,6 +316,78 @@
                         </div>
                     </div>
 
+                    <!-- Tracking Modal -->
+                    @if($order->status === 'sedang_dikirim' && $order->tracking_number && $order->courier)
+                        <div id="trackingModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                            <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-2xl bg-white">
+                                <!-- Modal Header -->
+                                <div class="flex items-center justify-between mb-4 pb-4 border-b">
+                                    <h3 class="text-xl font-bold text-gray-900">Detail Tracking Pengiriman</h3>
+                                    <button onclick="closeTrackingModal()" class="text-gray-400 hover:text-gray-600">
+                                        <i class="fas fa-times text-xl"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Modal Content -->
+                                <div class="max-h-[70vh] overflow-y-auto">
+                                    <!-- Tracking Info -->
+                                    <div id="modalTrackingInfo">
+                                        <div class="bg-gray-50 rounded-xl p-4 mb-4">
+                                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                                <div>
+                                                    <span class="text-gray-600">No. Resi:</span>
+                                                    <span class="font-semibold text-gray-900 block" id="modalTrackingWaybill">{{ $order->tracking_number }}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="text-gray-600">Kurir:</span>
+                                                    <span class="font-semibold text-gray-900 block" id="modalTrackingCourier">{{ strtoupper($order->courier) }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Status -->
+                                        <div id="modalTrackingStatus" class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-shipping-fast text-blue-500 text-xl mr-3"></i>
+                                                <div>
+                                                    <h4 class="font-semibold text-blue-900" id="modalStatusDescription">-</h4>
+                                                    <p class="text-sm text-blue-700" id="modalStatusLocation">-</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Shipper & Receiver -->
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                            <div class="bg-gray-50 rounded-xl p-4">
+                                                <h5 class="font-semibold text-gray-900 mb-2 text-sm">Pengirim</h5>
+                                                <p class="text-sm text-gray-700" id="modalShipperName">-</p>
+                                                <p class="text-xs text-gray-600 mt-1" id="modalShipperAddress">-</p>
+                                            </div>
+                                            <div class="bg-gray-50 rounded-xl p-4">
+                                                <h5 class="font-semibold text-gray-900 mb-2 text-sm">Penerima</h5>
+                                                <p class="text-sm text-gray-700" id="modalReceiverName">-</p>
+                                                <p class="text-xs text-gray-600 mt-1" id="modalReceiverAddress">-</p>
+                                            </div>
+                                        </div>
+
+                                        <!-- History Timeline -->
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900 mb-3">Riwayat Pengiriman</h4>
+                                            <div id="modalTrackingHistory" class="space-y-3">
+                                                <!-- Will be filled by JavaScript -->
+                                            </div>
+                                        </div>
+
+                                        <!-- API Source -->
+                                        <div class="mt-4 text-xs text-gray-500 text-right">
+                                            Data dari: <span id="modalApiSource" class="font-medium">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Status Management Section -->
                     @if($order->status === 'sedang_dikirim')
                         <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
@@ -336,6 +408,41 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Tracking Information -->
+                                @if($order->tracking_number && $order->courier)
+                                    <!-- Tracking Summary -->
+                                    <div id="trackingSummary" class="hidden mb-6">
+                                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center flex-1">
+                                                    <div class="flex-shrink-0">
+                                                        <i class="fas fa-shipping-fast text-blue-500 text-2xl"></i>
+                                                    </div>
+                                                    <div class="ml-4 flex-1">
+                                                        <h4 class="text-sm font-semibold text-blue-900">Status Pengiriman</h4>
+                                                        <p class="text-sm text-blue-700 mt-1" id="summaryStatus">Memuat data...</p>
+                                                        <p class="text-xs text-blue-600 mt-1" id="summaryDate">-</p>
+                                                    </div>
+                                                </div>
+                                                <button type="button" onclick="openTrackingModal()" 
+                                                    class="ml-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors">
+                                                    <i class="fas fa-eye mr-1"></i> Lihat Selengkapnya
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Loading State -->
+                                    <div id="trackingSummaryLoading" class="mb-6">
+                                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-spinner fa-spin text-gray-400 text-xl mr-3"></i>
+                                                <span class="text-sm text-gray-600">Memuat informasi tracking pengiriman...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
 
                                 <form action="{{ route('admin.orders.update-status', $order->id) }}" method="POST">
                                     @csrf
@@ -395,9 +502,14 @@
                                                 <label for="courier" class="block text-sm font-medium text-gray-700 mb-2">
                                                     Kurir <span class="text-red-500">*</span>
                                                 </label>
-                                                <input type="text" name="courier" id="courier" value="{{ old('courier') }}"
+                                                <select name="courier" id="courier"
                                                     class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                                    placeholder="Contoh: JNE, TIKI, POS" required>
+                                                    required>
+                                                    <option value="">Pilih Kurir</option>
+                                                    <option value="jne" {{ old('courier') == 'jne' ? 'selected' : '' }}>JNE</option>
+                                                    <option value="jnt" {{ old('courier') == 'jnt' ? 'selected' : '' }}>JNT</option>
+                                                    <option value="pos" {{ old('courier') == 'pos' ? 'selected' : '' }}>POS Indonesia</option>
+                                                </select>
                                             </div>
 
                                             <div>
@@ -552,57 +664,34 @@
             const fileInfo = document.getElementById('file-info');
 
             // Handle file input change
-            fileInput.addEventListener('change', function () {
-                if (this.files && this.files[0]) {
-                    fileInfo.textContent = 'File dipilih: ' + this.files[0].name;
-                    fileInfo.classList.remove('hidden');
-                } else {
-                    fileInfo.classList.add('hidden');
-                }
-            });
+            if (fileInput) {
+                fileInput.addEventListener('change', function () {
+                    if (this.files && this.files[0]) {
+                        fileInfo.textContent = 'File dipilih: ' + this.files[0].name;
+                        fileInfo.classList.remove('hidden');
+                    } else {
+                        fileInfo.classList.add('hidden');
+                    }
+                });
+            }
 
             // Handle form submission
-            form.addEventListener('submit', function (e) {
-                // Disable submit button and show loading
-                submitBtn.disabled = true;
-                submitText.classList.add('hidden');
-                submitLoader.classList.remove('hidden');
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    // Disable submit button and show loading
+                    submitBtn.disabled = true;
+                    submitText.classList.add('hidden');
+                    submitLoader.classList.remove('hidden');
 
-                // Basic validation
-                const courier = document.getElementById('courier').value.trim();
-                const trackingNumber = document.getElementById('tracking_number').value.trim();
-                const shippedAt = document.getElementById('shipped_at').value;
-                const shippingImage = fileInput.files[0];
+                    // Basic validation
+                    const courier = document.getElementById('courier').value.trim();
+                    const trackingNumber = document.getElementById('tracking_number').value.trim();
+                    const shippedAt = document.getElementById('shipped_at').value;
+                    const shippingImage = fileInput.files[0];
 
-                if (!courier || !trackingNumber || !shippedAt || !shippingImage) {
-                    e.preventDefault();
-                    alert('Semua field yang wajib harus diisi!');
-
-                    // Re-enable submit button
-                    submitBtn.disabled = false;
-                    submitText.classList.remove('hidden');
-                    submitLoader.classList.add('hidden');
-                    return false;
-                }
-
-                // Check file size (10MB = 10 * 1024 * 1024 bytes)
-                if (shippingImage && shippingImage.size > 10 * 1024 * 1024) {
-                    e.preventDefault();
-                    alert('Ukuran file maksimal 10MB!');
-
-                    // Re-enable submit button
-                    submitBtn.disabled = false;
-                    submitText.classList.remove('hidden');
-                    submitLoader.classList.add('hidden');
-                    return false;
-                }
-
-                // Check file type
-                if (shippingImage) {
-                    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-                    if (!allowedTypes.includes(shippingImage.type)) {
+                    if (!courier || !trackingNumber || !shippedAt || !shippingImage) {
                         e.preventDefault();
-                        alert('Format file harus JPEG, PNG, atau JPG!');
+                        alert('Semua field yang wajib harus diisi!');
 
                         // Re-enable submit button
                         submitBtn.disabled = false;
@@ -610,10 +699,215 @@
                         submitLoader.classList.add('hidden');
                         return false;
                     }
-                }
 
-                console.log('Form validation passed, submitting...');
-            });
+                    // Check file size (10MB = 10 * 1024 * 1024 bytes)
+                    if (shippingImage && shippingImage.size > 10 * 1024 * 1024) {
+                        e.preventDefault();
+                        alert('Ukuran file maksimal 10MB!');
+
+                        // Re-enable submit button
+                        submitBtn.disabled = false;
+                        submitText.classList.remove('hidden');
+                        submitLoader.classList.add('hidden');
+                        return false;
+                    }
+
+                    // Check file type
+                    if (shippingImage) {
+                        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                        if (!allowedTypes.includes(shippingImage.type)) {
+                            e.preventDefault();
+                            alert('Format file harus JPEG, PNG, atau JPG!');
+
+                            // Re-enable submit button
+                            submitBtn.disabled = false;
+                            submitText.classList.remove('hidden');
+                            submitLoader.classList.add('hidden');
+                            return false;
+                        }
+                    }
+
+                    console.log('Form validation passed, submitting...');
+                });
+            }
         });
+
+        // Tracking functionality
+        const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
+        const orderId = {{ $order->id }};
+        const trackingNumber = '{{ $order->tracking_number ?? '' }}';
+        const courier = '{{ $order->courier ?? '' }}';
+        let trackingData = null;
+
+        function getCacheKey() {
+            return `tracking_${orderId}_${courier}_${trackingNumber}`;
+        }
+
+        function openTrackingModal() {
+            document.getElementById('trackingModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTrackingModal() {
+            document.getElementById('trackingModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function getCachedData() {
+            try {
+                const cacheKey = getCacheKey();
+                const cached = localStorage.getItem(cacheKey);
+                
+                if (cached) {
+                    const data = JSON.parse(cached);
+                    const now = new Date().getTime();
+                    
+                    // Check if cache is still valid
+                    if (now - data.timestamp < CACHE_DURATION) {
+                        console.log('Using cached tracking data');
+                        return data.result;
+                    } else {
+                        // Clear expired cache
+                        localStorage.removeItem(cacheKey);
+                    }
+                }
+            } catch (e) {
+                console.error('Error reading cache:', e);
+            }
+            return null;
+        }
+
+        function setCachedData(result) {
+            try {
+                const cacheKey = getCacheKey();
+                const data = {
+                    timestamp: new Date().getTime(),
+                    result: result
+                };
+                localStorage.setItem(cacheKey, JSON.stringify(data));
+                console.log('Tracking data cached');
+            } catch (e) {
+                console.error('Error saving cache:', e);
+            }
+        }
+
+        function showElement(elementId) {
+            document.getElementById(elementId).classList.remove('hidden');
+        }
+
+        function hideElement(elementId) {
+            document.getElementById(elementId).classList.add('hidden');
+        }
+
+        function displayTrackingData(result) {
+            if (!result.success) {
+                // Hide loading, keep summary hidden
+                const loadingEl = document.getElementById('trackingSummaryLoading');
+                if (loadingEl) loadingEl.classList.add('hidden');
+                return;
+            }
+
+            trackingData = result;
+            const data = result.data;
+
+            // Update summary in status section
+            const summaryEl = document.getElementById('trackingSummary');
+            const loadingEl = document.getElementById('trackingSummaryLoading');
+            const summaryStatusEl = document.getElementById('summaryStatus');
+            const summaryDateEl = document.getElementById('summaryDate');
+
+            if (summaryEl && summaryStatusEl && summaryDateEl) {
+                summaryStatusEl.textContent = data.status.description || 'Dalam proses pengiriman';
+                if (data.history && data.history.length > 0) {
+                    const latestHistory = data.history[0];
+                    summaryDateEl.textContent = `${latestHistory.date || '-'} ${latestHistory.time || ''}`;
+                }
+                loadingEl.classList.add('hidden');
+                summaryEl.classList.remove('hidden');
+            }
+
+            // Update modal content
+            document.getElementById('modalTrackingWaybill').textContent = data.waybill || trackingNumber;
+            document.getElementById('modalTrackingCourier').textContent = data.courier || courier.toUpperCase();
+            document.getElementById('modalStatusDescription').textContent = data.status.description || 'Dalam proses pengiriman';
+            document.getElementById('modalStatusLocation').textContent = data.status.code || '-';
+            document.getElementById('modalShipperName').textContent = data.shipper.name || '-';
+            document.getElementById('modalShipperAddress').textContent = data.shipper.address || '-';
+            document.getElementById('modalReceiverName').textContent = data.receiver.name || '-';
+            document.getElementById('modalReceiverAddress').textContent = data.receiver.address || '-';
+
+            // Update history in modal
+            const historyContainer = document.getElementById('modalTrackingHistory');
+            historyContainer.innerHTML = '';
+
+            if (data.history && data.history.length > 0) {
+                data.history.forEach((item, index) => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'flex gap-4';
+                    
+                    historyItem.innerHTML = `
+                        <div class="flex-shrink-0 w-2 h-2 rounded-full ${index === 0 ? 'bg-blue-500' : 'bg-gray-300'} mt-2"></div>
+                        <div class="flex-1 pb-4 ${index !== data.history.length - 1 ? 'border-l-2 border-gray-200 pl-4 ml-1' : 'pl-4 ml-1'}">
+                            <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
+                                <div class="flex items-start justify-between mb-1">
+                                    <span class="text-xs font-semibold text-gray-500">${item.date || '-'} ${item.time || ''}</span>
+                                    ${item.location ? `<span class="text-xs text-gray-500"><i class="fas fa-map-marker-alt mr-1"></i>${item.location}</span>` : ''}
+                                </div>
+                                <p class="text-sm text-gray-900">${item.description || '-'}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    historyContainer.appendChild(historyItem);
+                });
+            } else {
+                historyContainer.innerHTML = '<p class="text-sm text-gray-500 text-center py-4">Tidak ada riwayat pengiriman</p>';
+            }
+
+            // Update API source
+            document.getElementById('modalApiSource').textContent = result.source === 'rajaongkir' ? 'RajaOngkir' : 'BinderByte';
+        }
+
+        async function loadTracking() {
+            // Check if tracking info is available
+            if (!trackingNumber || !courier) {
+                console.log('No tracking info available');
+                return;
+            }
+
+            // Check cache first
+            const cached = getCachedData();
+            if (cached) {
+                displayTrackingData(cached);
+                return;
+            }
+
+            // Fetch from API
+            try {
+                const response = await fetch(`{{ route('admin.orders.track', $order->id) }}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    // Cache the result
+                    setCachedData(result);
+                    displayTrackingData(result);
+                } else {
+                    console.error('Tracking failed:', result.message);
+                    const loadingEl = document.getElementById('trackingSummaryLoading');
+                    if (loadingEl) loadingEl.classList.add('hidden');
+                }
+            } catch (error) {
+                console.error('Error fetching tracking data:', error);
+                const loadingEl = document.getElementById('trackingSummaryLoading');
+                if (loadingEl) loadingEl.classList.add('hidden');
+            }
+        }
+
+        // Auto-load tracking when page loads if status is sedang_dikirim
+        @if($order->status === 'sedang_dikirim' && $order->tracking_number && $order->courier)
+            document.addEventListener('DOMContentLoaded', function() {
+                loadTracking();
+            });
+        @endif
     </script>
 @endsection

@@ -58,6 +58,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::post('/orders/{order}/confirm-received', [OrderController::class, 'confirmReceived'])->name('orders.confirm.received');
+    Route::get('/orders/{id}/track', [OrderController::class, 'trackShipment'])->name('orders.track');
 });
 
 // Testimonial routes
@@ -106,6 +107,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::patch('/orders/{order}/payment-status', [AdminOrderController::class, 'updatePaymentStatus'])->name('orders.update-payment-status');
     Route::post('/orders/{order}/shipping-proof', [AdminOrderController::class, 'uploadShippingProof'])->name('orders.upload-shipping-proof');
     Route::patch('/orders/{order}/ship', [AdminOrderController::class, 'ship'])->name('orders.ship');
+    Route::get('/orders/{id}/track', [AdminOrderController::class, 'trackShipment'])->name('orders.track');
 
     // Admin Store Settings
     Route::get('/store-settings', [StoreSettingController::class, 'index'])->name('store-settings.index');

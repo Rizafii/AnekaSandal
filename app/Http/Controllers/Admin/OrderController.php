@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Services\TrackingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -202,7 +203,7 @@ class OrderController extends Controller
             // Update order
             $updateData = [
                 'status' => Order::STATUS_SEDANG_DIKIRIM,
-                'courier' => $request->courier,
+                'courier' => strtolower($request->courier),
                 'tracking_number' => $request->tracking_number,
                 'shipped_at' => $request->shipped_at,
                 'shipping_image' => $shippingImagePath,
@@ -220,6 +221,35 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             \Log::error('Error in ship method: ' . $e->getMessage());
             return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Track shipment via API
+     */
+    public function trackShipment(Request $request, $id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+
+            if (!$order->tracking_number || !$order->courier) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nomor resi atau kurir tidak tersedia'
+                ], 400);
+            }
+
+            $trackingService = new TrackingService();
+            $result = $trackingService->track($order->courier, $order->tracking_number);
+
+            return response()->json($result);
+
+        } catch (\Exception $e) {
+            \Log::error('Error tracking shipment: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

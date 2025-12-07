@@ -177,7 +177,8 @@
                                 </span>
 
                                 @if($order->status === 'sedang_dikirim' && $order->tracking_number && $order->courier)
-                                    <!-- Tracking Summary -->\n <div id="trackingSummary" class="mt-4 hidden">
+                                    <!-- Tracking Summary -->
+                                    <div id="trackingSummary" class="mt-4 hidden">
                                         <div class="bg-white rounded-lg p-3 border border-primary/20">
                                             <div class="flex items-center gap-2 mb-2">
                                                 <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor"
@@ -660,17 +661,17 @@
                     historyItem.className = 'flex gap-3';
 
                     historyItem.innerHTML = `
-                            <div class="flex-shrink-0 w-2 h-2 rounded-full ${index === 0 ? 'bg-primary' : 'bg-gray-300'} mt-2"></div>
-                            <div class="flex-1 pb-3 ${index !== data.history.length - 1 ? 'border-l-2 border-gray-200 pl-3 ml-1' : 'pl-3 ml-1'}">
-                                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                                    <div class="flex items-start justify-between mb-1">
-                                        <span class="text-xs font-semibold text-gray-500">${item.date || '-'} ${item.time || ''}</span>
-                                        ${item.location ? `<span class="text-xs text-gray-500">${item.location}</span>` : ''}
+                                <div class="flex-shrink-0 w-2 h-2 rounded-full ${index === 0 ? 'bg-primary' : 'bg-gray-300'} mt-2"></div>
+                                <div class="flex-1 pb-3 ${index !== data.history.length - 1 ? 'border-l-2 border-gray-200 pl-3 ml-1' : 'pl-3 ml-1'}">
+                                    <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                                        <div class="flex items-start justify-between mb-1">
+                                            <span class="text-xs font-semibold text-gray-500">${item.date || '-'} ${item.time || ''}</span>
+                                            ${item.location ? `<span class="text-xs text-gray-500">${item.location}</span>` : ''}
+                                        </div>
+                                        <p class="text-sm text-gray-900">${item.description || '-'}</p>
                                     </div>
-                                    <p class="text-sm text-gray-900">${item.description || '-'}</p>
                                 </div>
-                            </div>
-                        `;
+                            `;
 
                     historyContainer.appendChild(historyItem);
                 });

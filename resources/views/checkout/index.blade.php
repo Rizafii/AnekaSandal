@@ -311,14 +311,7 @@
                                                     required>
                                                     <option value="">Pilih Kurir</option>
                                                     <option value="jne">JNE</option>
-                                                    <option value="sicepat">SiCepat</option>
-                                                    <option value="ide">IDE</option>
-                                                    <option value="sap">SAP</option>
                                                     <option value="jnt">J&T Express</option>
-                                                    <option value="ninja">Ninja Express</option>
-                                                    <option value="tiki">TIKI</option>
-                                                    <option value="lion">Lion Parcel</option>
-                                                    <option value="anteraja">AnterAja</option>
                                                     <option value="pos">POS Indonesia</option>
                                                 </select>
                                                 @error('courier')
@@ -706,21 +699,21 @@
                     card.className = `border rounded-xl p-4 cursor-pointer transition-all duration-200 ${isSelected ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-primary/50'}`;
 
                     card.innerHTML = `
-                                                            <div class="flex items-center justify-between">
-                                                                <div class="flex items-center gap-3">
-                                                                    <input type="radio" name="shipping_service_radio" value="${courierCode}_${cost.service}" 
-                                                                           class="w-4 h-4 text-primary border-gray-300 focus:ring-primary" ${isSelected ? 'checked' : ''}>
-                                                                    <div>
-                                                                        <div class="font-semibold text-gray-900">${courierName.toUpperCase()} - ${cost.service}</div>
-                                                                        <div class="text-sm text-gray-600">${cost.description}</div>
-                                                                        <div class="text-xs text-gray-500">Estimasi: ${cost.cost[0].etd} hari</div>
+                                                                <div class="flex items-center justify-between">
+                                                                    <div class="flex items-center gap-3">
+                                                                        <input type="radio" name="shipping_service_radio" value="${courierCode}_${cost.service}" 
+                                                                               class="w-4 h-4 text-primary border-gray-300 focus:ring-primary" ${isSelected ? 'checked' : ''}>
+                                                                        <div>
+                                                                            <div class="font-semibold text-gray-900">${courierName.toUpperCase()} - ${cost.service}</div>
+                                                                            <div class="text-sm text-gray-600">${cost.description}</div>
+                                                                            <div class="text-xs text-gray-500">Estimasi: ${cost.cost[0].etd} hari</div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="text-right">
+                                                                        <div class="font-bold text-lg text-gray-900">Rp ${cost.cost[0].value.toLocaleString('id-ID')}</div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="text-right">
-                                                                    <div class="font-bold text-lg text-gray-900">Rp ${cost.cost[0].value.toLocaleString('id-ID')}</div>
-                                                                </div>
-                                                            </div>
-                                                        `;
+                                                            `;
 
                     card.addEventListener('click', function () {
                         // Uncheck all other radio buttons

@@ -68,24 +68,22 @@ class TrackingService
                     'source' => 'rajaongkir'
                 ];
             }
+            $url = "{$this->rajaongkirUrl}/track/waybill?awb={$awb}&courier={$courier}";
 
-            $url = "{$this->rajaongkirUrl}/track/waybill";
+            $response = Http::withHeaders([
+                'key' => $this->rajaongkirApiKey
+            ])->post($url);
 
-            $response = Http::timeout(30)->withHeaders([
-                'key' => $this->rajaongkirApiKey,
-            ])->get($url, [
-                        'awb' => $awb,
-                        'courier' => $courier
-                    ]);
+
+
 
             if ($response->successful()) {
                 $data = $response->json();
-
                 // Check if tracking data exists
-                if (isset($data['rajaongkir']['result'])) {
+                if (isset($data['data'])) {
                     return [
                         'success' => true,
-                        'data' => $this->formatRajaOngkirData($data['rajaongkir']['result']),
+                        'data' => $this->formatRajaOngkirData($data['data']),
                         'source' => 'rajaongkir',
                         'raw' => $data
                     ];
@@ -112,7 +110,6 @@ class TrackingService
                 'status_code' => $response->status(),
                 'error_body' => $errorBody
             ];
-
         } catch (\Exception $e) {
             Log::error('RajaOngkir tracking error', [
                 'courier' => $courier,
@@ -178,7 +175,6 @@ class TrackingService
                 'status_code' => $response->status(),
                 'error_body' => $errorBody
             ];
-
         } catch (\Exception $e) {
             Log::error('BinderByte tracking error', [
                 'courier' => $courier,
@@ -208,7 +204,7 @@ class TrackingService
             'service' => $data['service_code'] ?? '',
             'status' => [
                 'code' => $data['delivery_status']['status'] ?? '',
-                'description' => $data['delivery_status']['pod_receiver'] ?? 'Dalam proses pengiriman'
+                'description' => $data['delivery_status']['status'] ?? 'Dalam proses pengiriman'
             ],
             'shipper' => [
                 'name' => $data['shipper_name'] ?? '',

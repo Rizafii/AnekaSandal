@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,           // Users harus pertama (banyak tabel reference ke users)
             CategorySeeder::class,       // Categories
             ProductSeeder::class,        // Products (reference ke categories)
-            ProductImageSeeder::class,   // Product Images (reference ke products)
+                // ProductImageSeeder::class,   // Product Images (reference ke products)
             ProductVariantSeeder::class, // Product Variants (reference ke products)
             CartSeeder::class,           // Cart (reference ke users, products, variants)
             OrderSeeder::class,          // Orders (reference ke users)

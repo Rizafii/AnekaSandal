@@ -29,9 +29,9 @@ class ProductsPage extends Component
         $this->categories = Category::where('is_active', true)->get()->toArray();
 
         // Check for category parameter from URL
-        if (request()->has('category') && request()->get('category')) {
-            $this->categoryFilter = request()->get('category');
-        }
+        // if (request()->has('category') && request()->get('category')) {
+        //     $this->categoryFilter = request()->get('category');
+        // }
 
         $this->loadProducts();
     }

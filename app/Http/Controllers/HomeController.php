@@ -9,6 +9,7 @@ class HomeController extends Controller
 {
     public function index()
     {
+
         // Ambil 6 produk terbaru untuk homepage
         $latestProducts = Products::active()
             ->with(['category', 'images', 'variants'])

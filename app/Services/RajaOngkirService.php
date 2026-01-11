@@ -12,7 +12,7 @@ class RajaOngkirService
 
     public function __construct()
     {
-        $this->apiKey = config('services.rajaongkir.key');
+        $this->apiKey = config('services.rajaongkir.api_key');
         $this->baseUrl = config('services.rajaongkir.url');
     }
 

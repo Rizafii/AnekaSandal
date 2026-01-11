@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Products;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $categoryId = null;
+        if ($request->category) {
+            $categoryId = Category::where('slug', $request->category)->value('id');
+        }
         $products = Products::active()
             ->with(['category', 'images', 'variants'])
             ->paginate(12);
@@ -30,7 +35,7 @@ class ProductController extends Controller
             ];
         });
 
-        return view('products', compact('products'));
+        return view('products', compact('products', 'categoryId'));
     }
 
     public function show($id)

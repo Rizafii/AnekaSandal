@@ -1,8 +1,84 @@
 <div>
+    <!-- Cancel Order Button -->
+    @if($order->status === 'menunggu_pembayaran')
+        <div class="mb-4">
+            <button type="button" onclick="openCancelModal{{ $order->id }}()"
+                class="bg-red-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-red-700 transition-colors w-full flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                Batalkan Pesanan
+            </button>
+        </div>
+
+        <!-- Cancel Modal -->
+        <div id="cancelModal{{ $order->id }}"
+            class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4"
+            onclick="if(event.target === this) closeCancelModal{{ $order->id }}()">
+            <div class="relative p-6 w-full max-w-md shadow-2xl rounded-2xl bg-white transform transition-all"
+                onclick="event.stopPropagation()">
+                <div class="text-center">
+                    <!-- Close Button -->
+                    <button type="button" onclick="closeCancelModal{{ $order->id }}()"
+                        class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                            </path>
+                        </svg>
+                    </button>
+
+                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+                        <svg class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Batalkan Pesanan?</h3>
+
+                    <div class="mb-6">
+                        <p class="text-sm text-gray-600 mb-3">Apakah Anda yakin ingin membatalkan pesanan</p>
+                    </div>
+
+                    <form action="{{ route('orders.cancel', $order->id) }}" method="POST">
+                        @csrf
+                        <div class="flex gap-3">
+                            <button type="button" onclick="closeCancelModal{{ $order->id }}()"
+                                class="flex-1 px-4 py-2.5 bg-gray-500 text-white text-sm font-semibold rounded-lg hover:bg-gray-600 transition-colors">
+                                Tidak
+                            </button>
+                            <button type="submit"
+                                class="flex-1 px-4 py-2.5 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700 transition-colors">
+                                Ya, Batalkan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function openCancelModal{{ $order->id }}() {
+                document.getElementById('cancelModal{{ $order->id }}').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeCancelModal{{ $order->id }}() {
+                document.getElementById('cancelModal{{ $order->id }}').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        </script>
+    @endif
+
+    <!-- Confirm Receipt Button -->
     @if($order->status === 'sedang_dikirim' && $order->shipped_at)
         <button wire:click="openModal"
-            class="bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700">
-            📦 Konfirmasi Terima Barang
+            class="bg-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-purple-700 w-full flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Konfirmasi Terima Barang
         </button>
 
         <!-- Confirmation Modal -->

@@ -261,6 +261,54 @@ class OrderController extends Controller
     }
 
     /**
+     * Cancel order (admin)
+     */
+    public function cancel(Request $request, Order $order)
+    {
+        $request->validate([
+            'reason' => 'required|string|max:500'
+        ], [
+            'reason.required' => 'Alasan pembatalan harus diisi',
+            'reason.max' => 'Alasan pembatalan maksimal 500 karakter'
+        ]);
+
+        // Check if order can be cancelled
+        if ($order->status === Order::STATUS_SELESAI) {
+            return back()->with('error', 'Pesanan yang sudah selesai tidak dapat dibatalkan');
+        }
+
+        if ($order->status === Order::STATUS_DIBATALKAN) {
+            return back()->with('error', 'Pesanan sudah dibatalkan sebelumnya');
+        }
+
+        try {
+            // Restore stock if order items have variants
+            foreach ($order->items as $item) {
+                if ($item->variant) {
+                    $item->variant->increment('stock', $item->quantity);
+                }
+            }
+
+            $order->update([
+                'status' => Order::STATUS_DIBATALKAN
+            ]);
+
+            $order->addStatusLog(
+                Order::STATUS_DIBATALKAN,
+                'Pesanan dibatalkan oleh admin. Alasan: ' . $request->reason,
+                Auth::id()
+            );
+
+            return redirect()->route('admin.orders.show', $order->id)
+                ->with('success', 'Pesanan berhasil dibatalkan');
+
+        } catch (\Exception $e) {
+            \Log::error('Error cancelling order: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Track shipment via API
      */
     public function trackShipment(Request $request, $id)

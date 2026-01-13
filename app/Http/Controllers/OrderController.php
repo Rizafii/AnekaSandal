@@ -117,7 +117,7 @@ class OrderController extends Controller
         }
     }
 
-    public function cancel(Order $order)
+    public function cancel(Request $request, Order $order)
     {
         // Check if user owns this order
         if ($order->user_id !== Auth::id()) {

@@ -218,7 +218,8 @@
                                         class="h-48 w-auto rounded-xl shadow-sm border border-gray-200">
                                     @if($order->received_at)
                                         <p class="text-xs text-gray-500 mt-2">Diterima pada:
-                                            {{ $order->received_at->format('d M Y H:i') }}</p>
+                                            {{ $order->received_at->format('d M Y H:i') }}
+                                        </p>
                                     @endif
                                 </div>
                             @endif
@@ -316,10 +317,91 @@
                         </div>
                     </div>
 
+                    <!-- Cancel Order Section (Admin) -->
+                    @if($order->status === 'menunggu_pembayaran')
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
+                            <div class="p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Batalkan Pesanan</h3>
+
+                                <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0">
+                                            <i class="fas fa-exclamation-triangle text-red-400 text-xl"></i>
+                                        </div>
+                                        <div class="ml-3">
+                                            <h4 class="text-sm font-semibold text-red-800">Perhatian</h4>
+                                            <p class="mt-1 text-sm text-red-700">
+                                                Pembatalan pesanan akan mengembalikan stok produk. Pastikan untuk memberikan
+                                                alasan pembatalan yang jelas.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <form id="cancelOrderForm" action="{{ route('admin.orders.cancel', $order->id) }}"
+                                    method="POST">
+                                    @csrf
+
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label for="cancel_reason" class="block text-sm font-medium text-gray-700 mb-2">
+                                                Alasan Pembatalan <span class="text-red-500">*</span>
+                                            </label>
+                                            <textarea name="reason" id="cancel_reason" rows="3"
+                                                class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                                placeholder="Masukkan alasan pembatalan pesanan" required></textarea>
+                                        </div>
+
+                                        <div class="flex justify-end pt-4">
+                                            <button type="button" onclick="confirmCancelOrder()"
+                                                class="bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 px-6 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors">
+                                                <i class="fas fa-times-circle mr-2"></i>Batalkan Pesanan
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <script>
+                                    function confirmCancelOrder() {
+                                        const reason = document.getElementById('cancel_reason').value.trim();
+
+                                        if (!reason) {
+                                            Swal.fire({
+                                                icon: 'warning',
+                                                title: 'Perhatian',
+                                                text: 'Alasan pembatalan harus diisi!',
+                                                confirmButtonColor: '#dc2626'
+                                            });
+                                            return;
+                                        }
+
+                                        Swal.fire({
+                                            title: 'Batalkan Pesanan?',
+                                            html: `<div class="text-left"><p class="mb-2">Apakah Anda yakin ingin membatalkan pesanan ini?</p><p class="text-sm text-gray-600">Alasan: <strong>${reason}</strong></p></div>`,
+                                            icon: 'warning',
+                                            showCancelButton: true,
+                                            confirmButtonColor: '#dc2626',
+                                            cancelButtonColor: '#6b7280',
+                                            confirmButtonText: 'Ya, Batalkan!',
+                                            cancelButtonText: 'Batal',
+                                            reverseButtons: true
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                document.getElementById('cancelOrderForm').submit();
+                                            }
+                                        });
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Tracking Modal -->
                     @if($order->status === 'sedang_dikirim' && $order->tracking_number && $order->courier)
-                        <div id="trackingModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-                            <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-2xl bg-white">
+                        <div id="trackingModal"
+                            class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                            <div
+                                class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-2xl bg-white">
                                 <!-- Modal Header -->
                                 <div class="flex items-center justify-between mb-4 pb-4 border-b">
                                     <h3 class="text-xl font-bold text-gray-900">Detail Tracking Pengiriman</h3>
@@ -336,17 +418,20 @@
                                             <div class="grid grid-cols-2 gap-4 text-sm">
                                                 <div>
                                                     <span class="text-gray-600">No. Resi:</span>
-                                                    <span class="font-semibold text-gray-900 block" id="modalTrackingWaybill">{{ $order->tracking_number }}</span>
+                                                    <span class="font-semibold text-gray-900 block"
+                                                        id="modalTrackingWaybill">{{ $order->tracking_number }}</span>
                                                 </div>
                                                 <div>
                                                     <span class="text-gray-600">Kurir:</span>
-                                                    <span class="font-semibold text-gray-900 block" id="modalTrackingCourier">{{ strtoupper($order->courier) }}</span>
+                                                    <span class="font-semibold text-gray-900 block"
+                                                        id="modalTrackingCourier">{{ strtoupper($order->courier) }}</span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <!-- Status -->
-                                        <div id="modalTrackingStatus" class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
+                                        <div id="modalTrackingStatus"
+                                            class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
                                             <div class="flex items-center">
                                                 <i class="fas fa-shipping-fast text-blue-500 text-xl mr-3"></i>
                                                 <div>
@@ -413,7 +498,8 @@
                                 @if($order->tracking_number && $order->courier)
                                     <!-- Tracking Summary -->
                                     <div id="trackingSummary" class="hidden mb-6">
-                                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
+                                        <div
+                                            class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
                                             <div class="flex items-center justify-between">
                                                 <div class="flex items-center flex-1">
                                                     <div class="flex-shrink-0">
@@ -425,7 +511,7 @@
                                                         <p class="text-xs text-blue-600 mt-1" id="summaryDate">-</p>
                                                     </div>
                                                 </div>
-                                                <button type="button" onclick="openTrackingModal()" 
+                                                <button type="button" onclick="openTrackingModal()"
                                                     class="ml-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg transition-colors">
                                                     <i class="fas fa-eye mr-1"></i> Lihat Selengkapnya
                                                 </button>
@@ -506,9 +592,12 @@
                                                     class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                                     required>
                                                     <option value="">Pilih Kurir</option>
-                                                    <option value="jne" {{ old('courier') == 'jne' ? 'selected' : '' }}>JNE</option>
-                                                    <option value="jnt" {{ old('courier') == 'jnt' ? 'selected' : '' }}>JNT</option>
-                                                    <option value="pos" {{ old('courier') == 'pos' ? 'selected' : '' }}>POS Indonesia</option>
+                                                    <option value="jne" {{ old('courier') == 'jne' ? 'selected' : '' }}>JNE
+                                                    </option>
+                                                    <option value="jnt" {{ old('courier') == 'jnt' ? 'selected' : '' }}>JNT
+                                                    </option>
+                                                    <option value="pos" {{ old('courier') == 'pos' ? 'selected' : '' }}>POS
+                                                        Indonesia</option>
                                                 </select>
                                             </div>
 
@@ -757,11 +846,11 @@
             try {
                 const cacheKey = getCacheKey();
                 const cached = localStorage.getItem(cacheKey);
-                
+
                 if (cached) {
                     const data = JSON.parse(cached);
                     const now = new Date().getTime();
-                    
+
                     // Check if cache is still valid
                     if (now - data.timestamp < CACHE_DURATION) {
                         console.log('Using cached tracking data');
@@ -844,20 +933,20 @@
                 data.history.forEach((item, index) => {
                     const historyItem = document.createElement('div');
                     historyItem.className = 'flex gap-4';
-                    
+
                     historyItem.innerHTML = `
-                        <div class="flex-shrink-0 w-2 h-2 rounded-full ${index === 0 ? 'bg-blue-500' : 'bg-gray-300'} mt-2"></div>
-                        <div class="flex-1 pb-4 ${index !== data.history.length - 1 ? 'border-l-2 border-gray-200 pl-4 ml-1' : 'pl-4 ml-1'}">
-                            <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
-                                <div class="flex items-start justify-between mb-1">
-                                    <span class="text-xs font-semibold text-gray-500">${item.date || '-'} ${item.time || ''}</span>
-                                    ${item.location ? `<span class="text-xs text-gray-500"><i class="fas fa-map-marker-alt mr-1"></i>${item.location}</span>` : ''}
+                            <div class="flex-shrink-0 w-2 h-2 rounded-full ${index === 0 ? 'bg-blue-500' : 'bg-gray-300'} mt-2"></div>
+                            <div class="flex-1 pb-4 ${index !== data.history.length - 1 ? 'border-l-2 border-gray-200 pl-4 ml-1' : 'pl-4 ml-1'}">
+                                <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
+                                    <div class="flex items-start justify-between mb-1">
+                                        <span class="text-xs font-semibold text-gray-500">${item.date || '-'} ${item.time || ''}</span>
+                                        ${item.location ? `<span class="text-xs text-gray-500"><i class="fas fa-map-marker-alt mr-1"></i>${item.location}</span>` : ''}
+                                    </div>
+                                    <p class="text-sm text-gray-900">${item.description || '-'}</p>
                                 </div>
-                                <p class="text-sm text-gray-900">${item.description || '-'}</p>
                             </div>
-                        </div>
-                    `;
-                    
+                        `;
+
                     historyContainer.appendChild(historyItem);
                 });
             } else {
@@ -905,7 +994,7 @@
 
         // Auto-load tracking when page loads if status is sedang_dikirim
         @if($order->status === 'sedang_dikirim' && $order->tracking_number && $order->courier)
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 loadTracking();
             });
         @endif

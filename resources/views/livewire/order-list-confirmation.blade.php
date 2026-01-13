@@ -1,7 +1,22 @@
 <div>
+    <!-- Cancel Order Button -->
+    @if($order->status === 'menunggu_pembayaran')
+        <button type="button" onclick="openCancelModal{{ $order->id }}()"
+            class="bg-red-600 text-white px-4 py-3 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+            Batalkan
+        </button>
+    @endif
+
+    <!-- Confirm Receipt Button -->
     @if($order->status === 'sedang_dikirim' && $order->shipped_at)
         <button wire:click="openModal"
-            class="bg-green-600 text-white px-4 py-3 rounded-lg text-sm font-medium hover:bg-green-700">
+            class="bg-green-600 text-white px-4 py-3 rounded-lg text-sm font-medium hover:bg-green-700 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
             Konfirmasi Terima
         </button>
 

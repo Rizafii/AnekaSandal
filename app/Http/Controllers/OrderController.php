@@ -34,6 +34,41 @@ class OrderController extends Controller
 
         $order->load(['items.product.images', 'items.variant', 'statusLogs.changedBy']);
 
+        // Auto-update status if tracking shows delivered
+        if (
+            $order->status === Order::STATUS_SEDANG_DIKIRIM &&
+            $order->tracking_number &&
+            $order->courier
+        ) {
+
+            try {
+                $trackingService = new TrackingService();
+                $result = $trackingService->track($order->courier, $order->tracking_number);
+
+                if ($result['success'] && isset($result['data']['status']['description'])) {
+                    $statusDescription = $result['data']['status']['description'];
+
+                    if ($trackingService->isDelivered($statusDescription)) {
+                        $order->update([
+                            'status' => Order::STATUS_SELESAI,
+                            'delivered_at' => now()
+                        ]);
+
+                        $order->addStatusLog(
+                            Order::STATUS_SELESAI,
+                            'Status otomatis diubah menjadi Selesai berdasarkan tracking API: ' . $statusDescription
+                        );
+
+                        // Reload order with updated status
+                        $order->refresh();
+                        $order->load(['statusLogs.changedBy']);
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Failed to auto-update order status from tracking: ' . $e->getMessage());
+            }
+        }
+
         return view('orders.show', compact('order'));
     }
 

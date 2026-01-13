@@ -68,7 +68,7 @@
                             <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
                                 <div class="px-8 py-6 border-b border-gray-100">
                                     <h2 class="text-lg font-semibold text-gray-900">Harga & Inventori</h2>
-                                    <p class="text-sm text-gray-600 mt-1">Atur harga dan stok produk</p>
+                                    <p class="text-sm text-gray-600 mt-1">Atur harga produk</p>
                                 </div>
 
                                 <div class="p-8 space-y-6">
@@ -86,37 +86,6 @@
                                                     placeholder="0">
                                             </div>
                                             @error('price')
-                                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-
-                                        <!-- Compare Price -->
-                                        <div>
-                                            <label for="compare_price"
-                                                class="block text-sm font-semibold text-gray-700 mb-2">
-                                                Harga Coret
-                                            </label>
-                                            <div class="relative">
-                                                <span class="absolute left-3 top-3 text-gray-500">Rp</span>
-                                                <input type="number" name="compare_price" id="compare_price"
-                                                    value="{{ old('compare_price') }}" min="0" step="0.01"
-                                                    class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('compare_price') border-red-300 @enderror"
-                                                    placeholder="0">
-                                            </div>
-                                            @error('compare_price')
-                                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-
-                                        <!-- Stock -->
-                                        <div>
-                                            <label for="stock" class="block text-sm font-semibold text-gray-700 mb-2">
-                                                Stok <span class="text-red-500">*</span>
-                                            </label>
-                                            <input type="number" name="stock" id="stock" value="{{ old('stock') }}" min="0"
-                                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('stock') border-red-300 @enderror"
-                                                placeholder="0">
-                                            @error('stock')
                                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                             @enderror
                                         </div>
@@ -405,16 +374,16 @@
                             const div = document.createElement('div');
                             div.className = 'relative group';
                             div.innerHTML = `
-                                            <div class="aspect-square bg-gray-100 rounded-xl overflow-hidden">
-                                                <img src="${e.target.result}" alt="Preview ${index + 1}" class="w-full h-full object-cover">
-                                            </div>
-                                            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button type="button" onclick="removePreview(this)" class="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600">
-                                                    ×
-                                                </button>
-                                            </div>
-                                            ${index === 0 ? '<div class="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">Utama</div>' : ''}
-                                        `;
+                                                <div class="aspect-square bg-gray-100 rounded-xl overflow-hidden">
+                                                    <img src="${e.target.result}" alt="Preview ${index + 1}" class="w-full h-full object-cover">
+                                                </div>
+                                                <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button type="button" onclick="removePreview(this)" class="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600">
+                                                        ×
+                                                    </button>
+                                                </div>
+                                                ${index === 0 ? '<div class="absolute bottom-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">Utama</div>' : ''}
+                                            `;
                             previewContainer.appendChild(div);
                         }
                         reader.readAsDataURL(file);
@@ -517,40 +486,40 @@
         document.getElementById('add-variant').addEventListener('click', function () {
             const container = document.getElementById('variants-container');
             const variantHtml = `
-                    <div class="variant-item border border-gray-200 rounded-xl p-6 mb-4">
-                        <div class="flex justify-between items-center mb-4">
-                            <h4 class="text-md font-semibold text-gray-800">Varian ${variantIndex + 1}</h4>
-                            <button type="button" onclick="removeVariant(this)" class="text-red-600 hover:text-red-800 p-2">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
+                        <div class="variant-item border border-gray-200 rounded-xl p-6 mb-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-md font-semibold text-gray-800">Varian ${variantIndex + 1}</h4>
+                                <button type="button" onclick="removeVariant(this)" class="text-red-600 hover:text-red-800 p-2">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Ukuran</label>
-                                <input type="text" name="variants[${variantIndex}][size]" placeholder="Contoh: 38, 39, 40" 
-                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Ukuran</label>
+                                    <input type="text" name="variants[${variantIndex}][size]" placeholder="Contoh: 38, 39, 40" 
+                                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Warna</label>
+                                    <input type="text" name="variants[${variantIndex}][color]" placeholder="Contoh: Hitam, Putih" 
+                                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Warna</label>
-                                <input type="text" name="variants[${variantIndex}][color]" placeholder="Contoh: Hitam, Putih" 
-                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Harga Tambahan (Rp)</label>
+                                    <input type="number" name="variants[${variantIndex}][additional_price]" value="0" min="0" step="0.01"
+                                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Stok</label>
+                                    <input type="number" name="variants[${variantIndex}][stock]" value="0" min="0"
+                                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Harga Tambahan (Rp)</label>
-                                <input type="number" name="variants[${variantIndex}][additional_price]" value="0" min="0" step="0.01"
-                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-2">Stok</label>
-                                <input type="number" name="variants[${variantIndex}][stock]" value="0" min="0"
-                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            </div>
-                        </div>
-                    </div>
-                `;
+                    `;
 
             container.insertAdjacentHTML('beforeend', variantHtml);
             variantIndex++;

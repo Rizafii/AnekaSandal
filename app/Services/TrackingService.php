@@ -289,4 +289,35 @@ class TrackingService
 
         return $formatted;
     }
+
+    /**
+     * Check if tracking status indicates delivery is complete
+     * 
+     * @param string $statusDescription
+     * @return bool
+     */
+    public function isDelivered($statusDescription)
+    {
+        $statusDescription = strtolower($statusDescription);
+
+        $deliveredKeywords = [
+            'delivered',
+            'terkirim',
+            'diterima',
+            'selesai',
+            'delivered to',
+            'shipment delivered',
+            'paket diterima',
+            'paket telah diterima',
+            'telah diterima'
+        ];
+
+        foreach ($deliveredKeywords as $keyword) {
+            if (strpos($statusDescription, $keyword) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

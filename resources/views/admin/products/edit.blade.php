@@ -68,7 +68,7 @@
                             <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
                                 <div class="px-8 py-6 border-b border-gray-100">
                                     <h2 class="text-lg font-semibold text-gray-900">Harga & Inventori</h2>
-                                    <p class="text-sm text-gray-600 mt-1">Perbarui harga dan stok produk</p>
+                                    <p class="text-sm text-gray-600 mt-1">Perbarui harga produk</p>
                                 </div>
 
                                 <div class="p-8 space-y-6">
@@ -86,39 +86,6 @@
                                                     placeholder="0">
                                             </div>
                                             @error('price')
-                                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-
-                                        <!-- Compare Price -->
-                                        <div>
-                                            <label for="compare_price"
-                                                class="block text-sm font-semibold text-gray-700 mb-2">
-                                                Harga Coret
-                                            </label>
-                                            <div class="relative">
-                                                <span class="absolute left-3 top-3 text-gray-500">Rp</span>
-                                                <input type="number" name="compare_price" id="compare_price"
-                                                    value="{{ old('compare_price', $product->compare_price) }}" min="0"
-                                                    step="0.01"
-                                                    class="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('compare_price') border-red-300 @enderror"
-                                                    placeholder="0">
-                                            </div>
-                                            @error('compare_price')
-                                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-
-                                        <!-- Stock -->
-                                        <div>
-                                            <label for="stock" class="block text-sm font-semibold text-gray-700 mb-2">
-                                                Stok <span class="text-red-500">*</span>
-                                            </label>
-                                            <input type="number" name="stock" id="stock"
-                                                value="{{ old('stock', $product->stock) }}" min="0"
-                                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('stock') border-red-300 @enderror"
-                                                placeholder="0">
-                                            @error('stock')
                                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                             @enderror
                                         </div>
@@ -155,7 +122,7 @@
                                                 Ini</label>
                                             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                                 @foreach($product->images as $image)
-                                                    <div class="relative group">
+                                                    <div class="relative group image-item">
                                                         <div class="aspect-square bg-gray-100 rounded-xl overflow-hidden">
                                                             <img src="{{ $image->image_path }}" alt="{{ $product->name }}"
                                                                 class="w-full h-full object-cover">
@@ -165,7 +132,7 @@
                                                             <label
                                                                 class="bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 cursor-pointer">
                                                                 <input type="checkbox" name="delete_images[]"
-                                                                    value="{{ $image->id }}" class="sr-only">
+                                                                    value="{{ $image->id }}" class="sr-only delete-image-checkbox" onchange="toggleImageDelete(this)">
                                                                 ×
                                                             </label>
                                                         </div>
@@ -612,6 +579,23 @@
 
         function removeVariant(button) {
             button.closest('.variant-item').remove();
+        }
+
+        // Toggle image delete visual feedback
+        function toggleImageDelete(checkbox) {
+            const imageItem = checkbox.closest('.image-item');
+            const img = imageItem.querySelector('img');
+            
+            if (checkbox.checked) {
+                img.style.opacity = '0.3';
+                img.style.filter = 'grayscale(100%)';
+                imageItem.style.border = '2px solid #ef4444';
+                imageItem.style.borderRadius = '0.75rem';
+            } else {
+                img.style.opacity = '1';
+                img.style.filter = 'none';
+                imageItem.style.border = 'none';
+            }
         }
     </script>
 @endpush

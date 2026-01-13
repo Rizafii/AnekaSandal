@@ -105,8 +105,6 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
-            'compare_price' => 'nullable|numeric|min:0|gt:price',
-            'stock' => 'required|integer|min:0',
             'sku' => 'nullable|string|max:255|unique:products,sku',
             'description' => 'nullable|string',
             'weight' => 'nullable|numeric|min:0',
@@ -125,6 +123,9 @@ class ProductController extends Controller
         if (empty($data['sku'])) {
             $data['sku'] = 'PRD-' . strtoupper(uniqid());
         }
+
+        // Generate slug from name
+        $data['slug'] = Str::slug($request->name);
 
         $product = Products::create($data);
 
@@ -176,8 +177,6 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
-            'compare_price' => 'nullable|numeric|min:0|gt:price',
-            'stock' => 'required|integer|min:0',
             'sku' => 'nullable|string|max:255|unique:products,sku,' . $product->id,
             'description' => 'nullable|string',
             'weight' => 'nullable|numeric|min:0',
@@ -193,6 +192,9 @@ class ProductController extends Controller
         ]);
 
         $data = $request->all();
+
+        // Generate slug from name
+        $data['slug'] = Str::slug($request->name);
 
         $product->update($data);
 

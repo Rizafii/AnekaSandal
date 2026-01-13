@@ -1,8 +1,9 @@
 <nav class="bg-white border-gray-200 dark:bg-gray-900 fixed top-5 left-5 right-5 z-50 rounded-xl shadow-lg border">
     <div class="flex flex-wrap items-center justify-between mx-auto p-2 relative">
         <!-- Left Side: Brand Logo -->
-        <a href="{{ route('home') ?? '/' }}" class="flex items-center space-x-3 rtl:space-x-reverse">
-            <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white pl-4">Aneka Sandal</span>
+        <a href="{{ route('home') ?? '/' }}" class="flex items-center pl-3 space-x-3 rtl:space-x-reverse">
+            <img src="/logo.svg" alt="Aneka Sandal Logo" class="h-10 w-auto">
+            <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Aneka Sandal</span>
         </a>
 
         <!-- Center: Categories and Products (Absolute Position) -->

@@ -23,7 +23,7 @@
                 <ul class="space-y-2 text-sm">
                     <li>Jl. Sekarpetak KM 1, Jatipuro</li>
                     <li><a href="tel:+6288226532872" class="hover:underline">+62 8822-6532-8872</a></li>
-                    <li><a href="mailto:support@anekasandal.id" class="hover:underline">support@anekasandal.id</a>
+                    <li><a href="mailto:anekasandaljtpr@gmail.com" class="hover:underline">anekasandaljtpr@gmail.com</a>
                     </li>
                     <li><a href="https://wa.me/6288226532872" target="_blank" class="hover:underline">WhatsApp</a>
                     </li>

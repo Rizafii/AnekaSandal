@@ -1,6 +1,7 @@
 <section class="px-3 bg-secondary">
     <div class="mx-auto">
-        <div class="title grid grid-cols-1 w-full items-center justify-center px-5 py-3 rounded-2xl bg-primary text-center">
+        <div
+            class="title grid grid-cols-1 w-full items-center justify-center px-5 py-3 rounded-2xl bg-primary text-center">
             <h2 class="text-4xl text-white">Hubungi Kami</h2>
         </div>
 
@@ -86,7 +87,7 @@
                                 </svg>
                             </div>
                             <h4 class="font-semibold text-gray-900 mb-1">Email</h4>
-                            <p class="text-sm text-gray-600">support@anekasandal.id</p>
+                            <p class="text-sm text-gray-600">anekasandaljtpr@gmail.com</p>
                         </div>
                     </div>
 

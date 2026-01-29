@@ -10,7 +10,7 @@
                 class="max-w-xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">
                 Koleksi Sandal Berkualitas Tinggi</h1>
             <p class="max-w-xl mb-6 font-normal text-white lg:mb-8 md:text-lg lg:text-xl ">
-                Temukan sandal berkualitas tinggi yang dirancang untuk kenyamanan dan gaya anda.yfufuyfy
+                Temukan sandal berkualitas tinggi yang dirancang untuk kenyamanan dan gaya anda.
             </p>
             <div class="cta">
                 <a href="{{route('products')}}"

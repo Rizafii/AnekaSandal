@@ -32,7 +32,7 @@
             <div>
                 <h5 class="font-semibold mb-3">Ikuti Kami</h5>
                 <div class="flex gap-3">
-                    <a href="#"
+                    {{-- <a href="#"
                         class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path
@@ -45,8 +45,8 @@
                             <path
                                 d="M22 12a10 10 0 10-11.5 9.9v-7H8v-3h2.5V9.5A3.5 3.5 0 0114.4 6h2.6v3h-2.6a1 1 0 00-1 1V12H17l-.5 3h-2.7v7A10 10 0 0022 12z" />
                         </svg>
-                    </a>
-                    <a href="#"
+                    </a> --}}
+                    <a href="https://www.instagram.com/aneka_sandal.jtpr?igsh=MWh3bTBkdmUzdHV5Mw==" target="_blank"
                         class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path
